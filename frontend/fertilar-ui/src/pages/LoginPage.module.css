@@ -2,7 +2,7 @@
 .root {
   display: flex;
   min-height: 100vh;
-  background-color: #0b1c14;
+  background-color: var(--cream);
 }
 
 /* ───────── Hero (left panel) ───────── */
@@ -10,7 +10,7 @@
   position: relative;
   flex: 1 1 55%;
   min-height: 100vh;
-  background-image: url('/hero-field.jpg');
+  background-image: url('/hero-chicken.png');
   background-size: cover;
   background-position: center;
   display: flex;
@@ -21,10 +21,10 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    160deg,
-    rgba(5, 28, 16, 0.55) 0%,
-    rgba(5, 28, 16, 0.75) 60%,
-    rgba(5, 28, 16, 0.95) 100%
+    165deg,
+    rgba(109, 138, 120, 0.35) 0%,
+    rgba(74, 100, 86, 0.55) 45%,
+    rgba(42, 41, 38, 0.72) 100%
   );
 }
 
@@ -34,14 +34,14 @@
   padding: 2.5rem 2.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.85rem;
 }
 
 .heroTagline {
-  font-size: 0.8rem;
-  color: #9dc9b0;
-  max-width: 320px;
-  line-height: 1.5;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.72);
+  max-width: 300px;
+  line-height: 1.6;
   font-weight: 400;
 }
 
@@ -52,7 +52,7 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background-color: #0b1c14;
+  background-color: var(--cream);
 }
 
 .formCard {
@@ -60,23 +60,26 @@
   max-width: 360px;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  background: var(--paper);
+  border-radius: var(--radius-xl);
+  padding: 2rem 1.75rem;
 }
 
 /* ───────── Typography ───────── */
 .title {
-  font-size: 1.85rem;
-  font-weight: 700;
-  color: #e8f5ec;
-  letter-spacing: -0.5px;
+  font-size: 1.65rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.03em;
   margin-bottom: 0.35rem;
 }
 
 .subtitle {
-  font-size: 0.82rem;
-  color: #7aad8f;
+  font-size: 0.85rem;
+  color: var(--ink-muted);
   margin-bottom: 1.75rem;
   font-weight: 400;
+  line-height: 1.5;
 }
 
 /* ───────── Form fields ───────── */
@@ -89,15 +92,13 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
 .label {
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: #9dc9b0;
-  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--ink-muted);
 }
 
 .labelRow {
@@ -107,20 +108,19 @@
 }
 
 .input {
-  background-color: #0a1c14;
-  border: 1px solid #1e3d2f;
-  border-radius: 6px;
-  color: #e8f5ec;
-  font-size: 0.88rem;
+  background-color: var(--cream);
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--ink);
+  font-size: 0.9rem;
   font-family: inherit;
-  padding: 0.6rem 0.75rem;
+  padding: 0.75rem 1rem;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: background 0.2s;
 }
 
 .input:focus {
-  border-color: #4ade80;
-  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.12);
+  background-color: var(--cream-deep);
 }
 
 .input:disabled {
@@ -134,66 +134,64 @@
   border: none;
   cursor: pointer;
   font-size: 0.72rem;
-  color: #4ade80;
+  color: var(--sage-deep);
   font-family: inherit;
   padding: 0;
-  transition: color 0.15s;
+  transition: opacity 0.15s;
 }
 
 .forgotLink:hover {
-  color: #86efac;
+  opacity: 0.75;
 }
 
 /* ───────── Checkbox ───────── */
 .checkboxRow {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.55rem;
   cursor: pointer;
   margin-top: 0.15rem;
 }
 
 .checkbox {
-  width: 14px;
-  height: 14px;
-  accent-color: #4ade80;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--sage-deep);
   cursor: pointer;
 }
 
 .checkboxLabel {
-  font-size: 0.8rem;
-  color: #9dc9b0;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
   user-select: none;
 }
 
 /* ───────── Error message ───────── */
 .error {
-  font-size: 0.78rem;
-  color: #f87171;
-  background: rgba(248, 113, 113, 0.08);
-  border: 1px solid rgba(248, 113, 113, 0.2);
-  border-radius: 5px;
-  padding: 0.45rem 0.65rem;
+  font-size: 0.8rem;
+  color: #8b4545;
+  background: #f5ebe8;
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.75rem;
 }
 
 /* ───────── Submit button ───────── */
 .submitBtn {
   margin-top: 0.5rem;
-  background-color: #4ade80;
-  color: #051c0e;
+  background-color: var(--sage-deep);
+  color: var(--paper);
   border: none;
-  border-radius: 7px;
-  padding: 0.72rem 1rem;
-  font-size: 0.92rem;
-  font-weight: 600;
+  border-radius: var(--radius-md);
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
   font-family: inherit;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
-  letter-spacing: 0.01em;
+  transition: opacity 0.2s, transform 0.1s;
 }
 
 .submitBtn:hover:not(:disabled) {
-  background-color: #22c55e;
+  opacity: 0.9;
 }
 
 .submitBtn:active:not(:disabled) {
@@ -201,16 +199,16 @@
 }
 
 .submitBtn:disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 /* ───────── Version tag ───────── */
 .version {
   text-align: center;
-  font-size: 0.7rem;
-  color: #3a6650;
-  margin-top: 1.5rem;
+  font-size: 0.68rem;
+  color: var(--ink-muted);
+  margin-top: 1.25rem;
 }
 
 /* ───────── Responsive ───────── */
@@ -220,8 +218,8 @@
   }
 
   .hero {
-    flex: 0 0 220px;
-    min-height: 220px;
+    flex: 0 0 240px;
+    min-height: 240px;
   }
 
   .heroBranding {
@@ -230,6 +228,11 @@
 
   .formPanel {
     flex: 1;
-    padding: 1.5rem 1rem;
+    padding: 1.25rem 1rem 2rem;
+  }
+
+  .formCard {
+    padding: 1.5rem 1.25rem;
+    border-radius: var(--radius-lg);
   }
 }

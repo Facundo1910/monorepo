@@ -1,0 +1,35 @@
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+}
+
+.name {
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.tag {
+  font-size: 0.68rem;
+  font-weight: 400;
+}
+
+.default .name {
+  color: var(--ink);
+}
+
+.default .tag {
+  color: var(--ink-muted);
+}
+
+.light .name {
+  color: var(--paper);
+  font-size: 1.65rem;
+}
+
+.light .tag {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.75rem;
+}
