@@ -46,11 +46,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void logout(String accessToken) {
-        GlobalSignOutRequest signOutRequest = GlobalSignOutRequest.builder()
-                .accessToken(accessToken)
-                .build();
-
-        cognitoClient.globalSignOut(signOutRequest);
+        cognitoClient.globalSignOut(
+                GlobalSignOutRequest.builder()
+                        .accessToken(accessToken)
+                        .build()
+        );
     }
 
     @Override
