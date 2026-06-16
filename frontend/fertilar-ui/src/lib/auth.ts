@@ -12,6 +12,10 @@ const poolData = {
 
 const userPool = new CognitoUserPool(poolData)
 
+function createCognitoUser(username: string): CognitoUser {
+  return new CognitoUser({ Username: username, Pool: userPool })
+}
+
 export type AuthResult =
   | { status: 'ok'; username: string; email: string }
   | { status: 'new_password_required'; cognitoUser: CognitoUser }
@@ -24,10 +28,7 @@ export function signIn(username: string, password: string): Promise<AuthResult> 
       Password: password,
     })
 
-    const cognitoUser = new CognitoUser({
-      Username: username,
-      Pool: userPool,
-    })
+    const cognitoUser = createCognitoUser(username)
 
     cognitoUser.authenticateUser(authDetails, {
       async onSuccess(session) {
@@ -42,7 +43,7 @@ export function signIn(username: string, password: string): Promise<AuthResult> 
       },
       onFailure(err) {
         console.error('[Cognito error]', err)
-        const msg = mapCognitoError(err.code ?? err.name)
+        const msg = mapCognitoError(getCognitoErrorCode(err))
         resolve({ status: 'error', message: msg })
       },
       newPasswordRequired(_userAttributes, _requiredAttributes) {
@@ -70,7 +71,7 @@ export function confirmNewPassword(
         })
       },
       onFailure(err) {
-        resolve({ status: 'error', message: mapCognitoError(err.code ?? err.name) })
+        resolve({ status: 'error', message: mapCognitoError(getCognitoErrorCode(err)) })
       },
     })
   })
@@ -102,8 +103,58 @@ export function signOut(): void {
   userPool.getCurrentUser()?.signOut()
 }
 
-function mapCognitoError(code: string): string {
+export type ResetResult =
+  | { status: 'ok' }
+  | { status: 'error'; message: string }
+
+export function requestPasswordReset(username: string): Promise<ResetResult> {
+  return new Promise((resolve) => {
+    createCognitoUser(username).forgotPassword({
+      onSuccess() {
+        resolve({ status: 'ok' })
+      },
+      onFailure(err) {
+        console.error('[Cognito error]', err)
+        resolve({
+          status: 'error',
+          message: mapCognitoError(getCognitoErrorCode(err), err.message),
+        })
+      },
+    })
+  })
+}
+
+export function confirmPasswordReset(
+  username: string,
+  code: string,
+  newPassword: string,
+): Promise<ResetResult> {
+  return new Promise((resolve) => {
+    createCognitoUser(username).confirmPassword(code, newPassword, {
+      onSuccess() {
+        resolve({ status: 'ok' })
+      },
+      onFailure(err) {
+        resolve({ status: 'error', message: mapCognitoError(getCognitoErrorCode(err)) })
+      },
+    })
+  })
+}
+
+type CognitoError = Error & { code?: string }
+
+function getCognitoErrorCode(err: Error): string {
+  return (err as CognitoError).code ?? err.name
+}
+
+function mapCognitoError(code: string, message?: string): string {
+  if (message?.includes('no registered/verified email or phone')) {
+    return 'Tu cuenta no tiene un correo o teléfono verificado. Contactá al administrador para habilitar la recuperación.'
+  }
+
   switch (code) {
+    case 'InvalidParameterException':
+      return 'Datos inválidos. Verificá la información e intentá de nuevo.'
     case 'NotAuthorizedException':
       return 'Usuario o clave incorrectos.'
     case 'UserNotFoundException':
@@ -117,6 +168,12 @@ function mapCognitoError(code: string): string {
       return 'Demasiados intentos. Esperá unos minutos.'
     case 'InvalidPasswordException':
       return 'La nueva clave no cumple los requisitos de seguridad.'
+    case 'CodeMismatchException':
+      return 'El código de verificación es incorrecto.'
+    case 'ExpiredCodeException':
+      return 'El código expiró. Solicitá uno nuevo.'
+    case 'CodeDeliveryFailureException':
+      return 'No se pudo enviar el código. Verificá tu correo e intentá de nuevo.'
     default:
       return 'Ocurrió un error. Intentá de nuevo.'
   }

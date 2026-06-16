@@ -144,6 +144,22 @@
   color: #86efac;
 }
 
+.backLink {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.78rem;
+  color: #7aad8f;
+  font-family: inherit;
+  padding: 0;
+  margin-top: 1rem;
+  transition: color 0.15s;
+}
+
+.backLink:hover {
+  color: #9dc9b0;
+}
+
 /* ───────── Checkbox ───────── */
 .checkboxRow {
   display: flex;
@@ -172,6 +188,15 @@
   color: #f87171;
   background: rgba(248, 113, 113, 0.08);
   border: 1px solid rgba(248, 113, 113, 0.2);
+  border-radius: 5px;
+  padding: 0.45rem 0.65rem;
+}
+
+.success {
+  font-size: 0.78rem;
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.08);
+  border: 1px solid rgba(74, 222, 128, 0.2);
   border-radius: 5px;
   padding: 0.45rem 0.65rem;
 }
