@@ -5,7 +5,8 @@
 }
 
 :root {
-  --color-bg: #0d1f1a;
+  /* Login (dark) — unchanged for auth screen */
+  --color-bg: #0b1c14;
   --color-surface: #112820;
   --color-surface-light: #173324;
   --color-border: #1e3d2f;
@@ -15,13 +16,34 @@
   --color-text-muted: #7aad8f;
   --color-input-bg: #0a1c14;
   --color-input-border: #1e3d2f;
-  --font-family: 'Inter', system-ui, sans-serif;
+
+  /* App shell — organic minimal */
+  --cream: #f5f3ef;
+  --cream-deep: #ebe8e1;
+  --paper: #fdfcfa;
+  --sage: #8faa94;
+  --sage-soft: #a8bfaa;
+  --sage-muted: #c5d4c6;
+  --sage-deep: #6d8a78;
+  --ink: #2a2926;
+  --ink-soft: #5c5a54;
+  --ink-muted: #9a9690;
+  --line: rgba(42, 41, 38, 0.08);
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --radius-xl: 36px;
+  --font-family: 'DM Sans', system-ui, sans-serif;
 }
 
 html, body, #root {
   height: 100%;
   font-family: var(--font-family);
-  background-color: var(--color-bg);
-  color: var(--color-text);
+  background-color: var(--cream);
+  color: var(--ink);
   -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
 }

@@ -3,7 +3,7 @@ import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { CognitoUser } from 'amazon-cognito-identity-js'
 import styles from './LoginPage.module.css'
-import FertilARLogo from '../components/FertilARLogo.tsx'
+import AppBrand from '../components/AppBrand'
 import { signIn, confirmNewPassword } from '../lib/auth.ts'
 import { useAuth } from '../context/AuthContext'
 
@@ -84,7 +84,7 @@ export default function LoginPage() {
         <div className={styles.hero}>
           <div className={styles.heroOverlay} />
           <div className={styles.heroBranding}>
-            <FertilARLogo />
+            <AppBrand variant="light" />
             <p className={styles.heroTagline}>
               Sistema de Telemetría y Trazabilidad para el Monitoreo del
               Compostaje de Guano Avícola
@@ -94,15 +94,15 @@ export default function LoginPage() {
 
         <div className={styles.formPanel}>
           <div className={styles.formCard}>
-            <h1 className={styles.title}>Nueva Clave</h1>
+            <h1 className={styles.title}>nueva clave</h1>
             <p className={styles.subtitle}>
-              Tu cuenta requiere que establezcas una nueva clave de acceso.
+              Tu cuenta requiere una nueva clave de acceso.
             </p>
 
             <form className={styles.form} onSubmit={handleNewPassword} noValidate>
               <div className={styles.field}>
                 <label className={styles.label} htmlFor="nueva-clave">
-                  NUEVA CLAVE
+                  nueva clave
                 </label>
                 <input
                   id="nueva-clave"
@@ -117,7 +117,7 @@ export default function LoginPage() {
 
               <div className={styles.field}>
                 <label className={styles.label} htmlFor="confirmar-clave">
-                  CONFIRMAR CLAVE
+                  confirmar clave
                 </label>
                 <input
                   id="confirmar-clave"
@@ -133,7 +133,7 @@ export default function LoginPage() {
               {error && <p className={styles.error}>{error}</p>}
 
               <button type="submit" className={styles.submitBtn} disabled={loading}>
-                {loading ? 'Guardando...' : 'Confirmar y Entrar →'}
+                {loading ? 'guardando…' : 'confirmar'}
               </button>
             </form>
 
@@ -150,7 +150,7 @@ export default function LoginPage() {
       <div className={styles.hero}>
         <div className={styles.heroOverlay} />
         <div className={styles.heroBranding}>
-          <FertilARLogo />
+          <AppBrand variant="light" />
           <p className={styles.heroTagline}>
             Sistema de Telemetría y Trazabilidad para el Monitoreo del
             Compostaje de Guano Avícola
@@ -160,15 +160,15 @@ export default function LoginPage() {
 
       <div className={styles.formPanel}>
         <div className={styles.formCard}>
-          <h1 className={styles.title}>Iniciar Sesión</h1>
+          <h1 className={styles.title}>iniciar sesión</h1>
           <p className={styles.subtitle}>
-            Ingresá tus credenciales de acceso seguro.
+            Ingresá tus credenciales de acceso.
           </p>
 
           <form className={styles.form} onSubmit={handleLogin} noValidate>
             <div className={styles.field}>
               <label className={styles.label} htmlFor="usuario">
-                USUARIO O CORREO
+                usuario o correo
               </label>
               <input
                 id="usuario"
@@ -184,14 +184,14 @@ export default function LoginPage() {
             <div className={styles.field}>
               <div className={styles.labelRow}>
                 <label className={styles.label} htmlFor="clave">
-                  CLAVE DE ACCESO
+                  clave
                 </label>
                 <button
                   type="button"
                   className={styles.forgotLink}
                   onClick={() => alert('Función de recuperación próximamente.')}
                 >
-                  ¿Recuperar clave?
+                  ¿recuperar?
                 </button>
               </div>
               <input
@@ -213,13 +213,13 @@ export default function LoginPage() {
                 onChange={(e) => setMantenerSesion(e.target.checked)}
                 disabled={loading}
               />
-              <span className={styles.checkboxLabel}>Mantener sesión activa</span>
+              <span className={styles.checkboxLabel}>mantener sesión</span>
             </label>
 
             {error && <p className={styles.error}>{error}</p>}
 
             <button type="submit" className={styles.submitBtn} disabled={loading}>
-              {loading ? 'Verificando...' : 'Ingresar al Sistema →'}
+              {loading ? 'verificando…' : 'ingresar'}
             </button>
           </form>
 
