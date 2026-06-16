@@ -1,0 +1,32 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.icon {
+  width: 28px;
+  height: 34px;
+  margin-bottom: 0.15rem;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.brand {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #e8f5ec;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+.sub {
+  font-size: 0.75rem;
+  color: #7aad8f;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
