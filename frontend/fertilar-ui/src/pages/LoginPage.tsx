@@ -6,10 +6,12 @@ import styles from './LoginPage.module.css'
 import AppBrand from '../components/AppBrand'
 import { signIn, confirmNewPassword } from '../lib/auth.ts'
 import { useAuth } from '../context/AuthContext'
+import { useDialog } from '../context/DialogContext'
 
 export default function LoginPage() {
   const navigate = useNavigate()
   const { setUsuario } = useAuth()
+  const dialog = useDialog()
 
   // Paso 1 — credenciales
   const [inputUsuario, setInputUsuario] = useState('')
@@ -189,7 +191,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   className={styles.forgotLink}
-                  onClick={() => alert('Función de recuperación próximamente.')}
+                  onClick={() => dialog.alert('La recuperación de clave estará disponible pronto.', 'pronto')}
                 >
                   ¿recuperar?
                 </button>

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Pencil, Plus, Trash2 } from 'lucide-react'
 import PilaModal from '../components/PilaModal'
+import { useDialog } from '../context/DialogContext'
 import { createPila, deletePila, getPila, listPilas, updatePila } from '../lib/pilas'
 import type { Pila, PilaEstado, PilaRequest, PilaResumen } from '../types/pila'
 import styles from './PilasPage.module.css'
@@ -21,6 +22,7 @@ function formatDate(date: string): string {
 }
 
 export default function PilasPage() {
+  const dialog = useDialog()
   const [pilas, setPilas] = useState<PilaResumen[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -55,17 +57,26 @@ export default function PilasPage() {
       setEditingPila(pila)
       setModalOpen(true)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'No se pudo cargar la pila.')
+      await dialog.error(
+        err instanceof Error ? err.message : 'No se pudo cargar la pila.',
+      )
     }
   }
 
   const handleDelete = async (id: string, nombre: string) => {
-    if (!confirm(`¿Eliminar "${nombre}"?`)) return
+    const ok = await dialog.confirm(
+      `¿Eliminar "${nombre}"? Esta acción no se puede deshacer.`,
+      'eliminar pila',
+      { destructive: true, confirmLabel: 'eliminar' },
+    )
+    if (!ok) return
     try {
       await deletePila(id)
       await loadPilas()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'No se pudo eliminar la pila.')
+      await dialog.error(
+        err instanceof Error ? err.message : 'No se pudo eliminar la pila.',
+      )
     }
   }
 

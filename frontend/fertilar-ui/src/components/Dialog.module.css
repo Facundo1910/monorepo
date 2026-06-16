@@ -1,0 +1,77 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(42, 41, 38, 0.2);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 400;
+  padding: 1rem;
+}
+
+.dialog {
+  background: var(--paper);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 360px;
+  padding: 1.5rem;
+}
+
+.title {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.message {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin-bottom: 1.5rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.65rem;
+}
+
+.actionsSingle {
+  justify-content: stretch;
+}
+
+.btn {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.cancelBtn {
+  background: var(--cream);
+  color: var(--ink-soft);
+}
+
+.confirmBtn {
+  background: var(--sage-deep);
+  color: var(--paper);
+}
+
+.destructiveBtn {
+  background: #8b4545;
+  color: var(--paper);
+}
+
+.error .title {
+  color: #8b4545;
+}
