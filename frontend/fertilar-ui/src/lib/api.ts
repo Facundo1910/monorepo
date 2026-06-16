@@ -2,7 +2,7 @@ const API_URL = import.meta.env.VITE_API_URL as string
 
 export async function syncUsuario(idToken: string): Promise<void> {
   try {
-    await fetch(`${API_URL}/api/usuarios/sync`, {
+    await fetch(`${API_URL}/usuarios/sync`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${idToken}`,
