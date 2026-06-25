@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import {
+  Activity,
   Award,
   Bell,
   LayoutGrid,
@@ -19,6 +20,7 @@ const NAV_ITEMS = [
   { to: '/pilas', label: 'pilas', icon: Layers, enabled: true },
   { to: '/sensores', label: 'sensores', icon: Radio, enabled: true },
   { to: '/alertas', label: 'alertas', icon: Bell, enabled: true },
+  { to: '/lecturas', label: 'lecturas', icon: Activity, enabled: true },
   { to: '/certificados', label: 'certificados', icon: Award, enabled: false },
 ] as const
 

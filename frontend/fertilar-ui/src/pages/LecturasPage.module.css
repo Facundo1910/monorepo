@@ -1,0 +1,252 @@
+.page {
+  padding: 0 1.5rem 2.5rem;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-top: 0.25rem;
+}
+
+.heading {
+  font-size: 2rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.sub {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  margin-top: 0.45rem;
+  line-height: 1.55;
+  max-width: 360px;
+}
+
+.addBtn {
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.addBtn:hover {
+  background: var(--cream-deep);
+  transform: scale(1.04);
+}
+
+.addBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.filters {
+  display: flex;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filterSelect {
+  padding: 0.45rem 0.85rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  font-family: inherit;
+  cursor: pointer;
+  max-width: 100%;
+}
+
+.sheet {
+  background: var(--paper);
+  border-radius: var(--radius-xl);
+  padding: 1.25rem;
+}
+
+.sheetInner {
+  background: var(--sage);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  min-height: 120px;
+}
+
+.listMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 0.5rem 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.78rem;
+}
+
+.count {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--paper);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-md);
+  transition: background 0.2s;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+}
+
+.card:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.time {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.65);
+  min-width: 3.5rem;
+  flex-shrink: 0;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.sensor {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--paper);
+  letter-spacing: -0.01em;
+}
+
+.metrics {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.45;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.pageBtn {
+  padding: 0.45rem 0.85rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.pageBtn:hover:not(:disabled) {
+  background: var(--cream-deep);
+}
+
+.pageBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pageInfo {
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+}
+
+.note {
+  margin-top: 1rem;
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  text-align: center;
+}
+
+.empty {
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.loading {
+  padding: 2.5rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.88rem;
+}
+
+.error {
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  background: var(--paper);
+  border-radius: var(--radius-md);
+  color: #8b4545;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 0 1rem 2rem;
+  }
+
+  .top {
+    align-items: flex-start;
+  }
+
+  .heading {
+    font-size: 1.65rem;
+  }
+
+  .time {
+    display: none;
+  }
+
+  .card {
+    padding: 0.75rem;
+  }
+}
