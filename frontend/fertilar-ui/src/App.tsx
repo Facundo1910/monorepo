@@ -6,6 +6,7 @@ import AppLayout from './components/AppLayout'
 import LoginPage from './pages/LoginPage.tsx'
 import DashboardPage from './pages/DashboardPage.tsx'
 import PilasPage from './pages/PilasPage.tsx'
+import SensoresPage from './pages/SensoresPage.tsx'
 
 export default function App() {
   return (
@@ -22,7 +23,8 @@ export default function App() {
         >
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/pilas" element={<PilasPage />} />
-          
+          <Route path="/sensores" element={<SensoresPage />} />
+
         </Route>
         <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
