@@ -17,7 +17,7 @@ import styles from './AppLayout.module.css'
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'inicio', icon: LayoutGrid, enabled: true },
   { to: '/pilas', label: 'pilas', icon: Layers, enabled: true },
-  { to: '/sensores', label: 'sensores', icon: Radio, enabled: false },
+  { to: '/sensores', label: 'sensores', icon: Radio, enabled: true },
   { to: '/alertas', label: 'alertas', icon: Bell, enabled: false },
   { to: '/certificados', label: 'certificados', icon: Award, enabled: false },
 ] as const

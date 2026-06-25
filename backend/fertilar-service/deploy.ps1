@@ -1,6 +1,6 @@
 Write-Host "Generando deploy.zip para Elastic Beanstalk..."
 
-mvn package -DskipTests -q
+mvn clean package -DskipTests -q
 
 New-Item -ItemType Directory -Force -Path "target\eb-deploy" | Out-Null
 Copy-Item "target\fertilar-service-0.0.1-SNAPSHOT.jar" "target\eb-deploy\fertilar-service-0.0.1-SNAPSHOT.jar" -Force
