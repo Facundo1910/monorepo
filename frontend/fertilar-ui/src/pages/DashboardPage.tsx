@@ -5,7 +5,7 @@ import styles from './DashboardPage.module.css'
 const MODULES = [
   { to: '/pilas', label: 'pilas', enabled: true },
   { to: '/sensores', label: 'sensores', enabled: true },
-  { to: '/alertas', label: 'alertas', enabled: false },
+  { to: '/alertas', label: 'alertas', enabled: true },
   { to: '/certificados', label: 'certificados', enabled: false },
 ]
 
