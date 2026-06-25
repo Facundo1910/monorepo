@@ -11,4 +11,6 @@ public interface AlertaRepository extends JpaRepository<Alerta, UUID> {
     List<Alerta> findByPilaIdAndResueltaFalse(UUID pilaId);
 
     List<Alerta> findByPilaId(UUID pilaId);
+
+    List<Alerta> findByResuelta(Boolean resuelta);
 }
