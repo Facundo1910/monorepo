@@ -248,6 +248,19 @@
   flex-wrap: wrap;
   gap: 0.65rem;
   margin-bottom: 1rem;
+  align-items: center;
+}
+
+.emitNotice {
+  flex: 1 1 100%;
+  margin: 0;
+  padding: 0.85rem 1rem;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  background: var(--paper);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
 }
 
 .tableWrap {

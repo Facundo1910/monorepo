@@ -53,6 +53,24 @@ function canEmitirCertificado(rol: UsuarioRol | null): boolean {
   return rol === 'ADMIN' || rol === 'ENCARGADO'
 }
 
+function motivoNoEmitir(
+  estado: PilaEstado,
+  rol: UsuarioRol | null,
+  tieneLecturas: boolean,
+): string | null {
+  if (estado !== 'FINALIZADA') return null
+  if (!canEmitirCertificado(rol)) {
+    if (rol == null) {
+      return 'No pudimos verificar tu rol. Recargá la página o pedile a un administrador que te asigne permisos.'
+    }
+    return 'Solo usuarios admin o encargado pueden emitir certificados.'
+  }
+  if (!tieneLecturas) {
+    return 'La pila no tiene lecturas registradas. Cargá al menos una lectura del sensor antes de emitir.'
+  }
+  return null
+}
+
 function getLatestLectura(lecturas: Lectura[]): Lectura | null {
   if (lecturas.length === 0) return null
   return [...lecturas].sort(
@@ -207,7 +225,25 @@ export default function PilaDetailPage() {
         buildRequest({ estado: 'FINALIZADA', fechaFin: hoy }),
       )
       setPila(updated)
-      await dialog.alert('Pila finalizada.')
+
+      const bloqueo = motivoNoEmitir(updated.estado, rol, ultimaLectura != null)
+      if (bloqueo) {
+        await dialog.alert(`Pila finalizada.\n\n${bloqueo}`)
+        return
+      }
+
+      const emitir = await dialog.confirm(
+        'La pila quedó finalizada. ¿Querés emitir el certificado ahora?',
+        'emitir certificado',
+        { confirmLabel: 'emitir' },
+      )
+      if (emitir) {
+        setCertModalOpen(true)
+      } else {
+        await dialog.alert(
+          'Pila finalizada. Podés emitir el certificado cuando quieras con el botón de abajo.',
+        )
+      }
     } catch (err) {
       await dialog.error(err instanceof Error ? err.message : 'No se pudo finalizar.')
     } finally {
@@ -254,7 +290,11 @@ export default function PilaDetailPage() {
     )
   }
 
-  const puedeEmitir = pila.estado === 'FINALIZADA' && canEmitirCertificado(rol)
+  const puedeEmitir =
+    pila.estado === 'FINALIZADA' &&
+    canEmitirCertificado(rol) &&
+    ultimaLectura != null
+  const avisoEmitir = motivoNoEmitir(pila.estado, rol, ultimaLectura != null)
 
   return (
     <div className={styles.page}>
@@ -384,6 +424,9 @@ export default function PilaDetailPage() {
           >
             {finalizando ? 'finalizando…' : 'finalizar pila'}
           </button>
+        )}
+        {pila.estado === 'FINALIZADA' && avisoEmitir && (
+          <p className={styles.emitNotice}>{avisoEmitir}</p>
         )}
         {puedeEmitir && (
           <button

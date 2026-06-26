@@ -23,7 +23,13 @@ public class UsuarioAuthServiceImpl implements UsuarioAuthService {
             throw new UnauthorizedException("Token de autorización requerido");
         }
 
-        String payload = JwtUtil.decodePayload(authHeader.replace("Bearer ", ""));
+        String token = authHeader.replace("Bearer ", "").trim();
+        String payload;
+        try {
+            payload = JwtUtil.decodePayload(token);
+        } catch (RuntimeException ex) {
+            throw new UnauthorizedException("Token inválido");
+        }
         String sub = JwtUtil.getClaim(payload, "sub");
         if (sub == null) {
             throw new UnauthorizedException("Token inválido");

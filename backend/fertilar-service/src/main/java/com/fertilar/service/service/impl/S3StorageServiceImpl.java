@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
-import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.nio.charset.StandardCharsets;
@@ -30,11 +29,12 @@ public class S3StorageServiceImpl implements S3StorageService {
     public String subirCertificadoHtml(String numero, String html) {
         String key = CERTIFICADOS_PREFIX + numero + ".html";
 
+        // Sin ACL: buckets con "Bucket owner enforced" rechazan PUBLIC_READ.
+        // La lectura pública se configura con bucket policy en AWS.
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(key)
                 .contentType("text/html; charset=utf-8")
-                .acl(ObjectCannedACL.PUBLIC_READ)
                 .build();
 
         s3Client.putObject(request, RequestBody.fromBytes(html.getBytes(StandardCharsets.UTF_8)));
