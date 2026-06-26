@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -32,6 +33,18 @@ public class Pila {
 
     @Column(name = "fecha_fin")
     private LocalDate fechaFin;
+
+    @Column(name = "dias_estimados", nullable = false)
+    private Integer diasEstimados = 90;
+
+    @Column(name = "humedad_objetivo", precision = 5, scale = 2, nullable = false)
+    private BigDecimal humedadObjetivo = new BigDecimal("43.0");
+
+    @Column(name = "temperatura_objetivo", precision = 5, scale = 2, nullable = false)
+    private BigDecimal temperaturaObjetivo = new BigDecimal("30.0");
+
+    @Column(name = "fecha_estimada_fin")
+    private LocalDate fechaEstimadaFin;
 
     @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)

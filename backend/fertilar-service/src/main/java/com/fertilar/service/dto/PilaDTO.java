@@ -4,6 +4,7 @@ import com.fertilar.service.entity.Pila;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -18,6 +19,10 @@ public class PilaDTO {
     private String ubicacion;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
+    private Integer diasEstimados;
+    private BigDecimal humedadObjetivo;
+    private BigDecimal temperaturaObjetivo;
+    private LocalDate fechaEstimadaFin;
     private Pila.Estado estado;
     private LocalDateTime createdAt;
 
@@ -29,6 +34,10 @@ public class PilaDTO {
                 .ubicacion(pila.getUbicacion())
                 .fechaInicio(pila.getFechaInicio())
                 .fechaFin(pila.getFechaFin())
+                .diasEstimados(pila.getDiasEstimados())
+                .humedadObjetivo(pila.getHumedadObjetivo())
+                .temperaturaObjetivo(pila.getTemperaturaObjetivo())
+                .fechaEstimadaFin(pila.getFechaEstimadaFin())
                 .estado(pila.getEstado())
                 .createdAt(pila.getCreatedAt())
                 .build();
