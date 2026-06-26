@@ -75,19 +75,43 @@ public class LecturaServiceImpl implements LecturaService {
                 ? Math.min(limit, MAX_SENSOR_LIMIT)
                 : DEFAULT_SENSOR_LIMIT;
         Pageable pageable = PageRequest.of(0, effectiveLimit);
-        return lecturaRepository.findBySensorIdFiltered(sensorId, desde, hasta, pageable)
-                .stream()
-                .map(LecturaDTO::from)
-                .toList();
+
+        Page<Lectura> page;
+        if (desde != null && hasta != null) {
+            page = lecturaRepository.findBySensorIdAndTimestampBetweenOrderByTimestampDesc(
+                    sensorId, desde, hasta, pageable);
+        } else if (desde != null) {
+            page = lecturaRepository.findBySensorIdAndTimestampGreaterThanEqualOrderByTimestampDesc(
+                    sensorId, desde, pageable);
+        } else if (hasta != null) {
+            page = lecturaRepository.findBySensorIdAndTimestampLessThanEqualOrderByTimestampDesc(
+                    sensorId, hasta, pageable);
+        } else {
+            page = lecturaRepository.findBySensorIdOrderByTimestampDesc(sensorId, pageable);
+        }
+
+        return page.map(LecturaDTO::from).getContent();
     }
 
     @Override
     public List<LecturaDTO> listarPorPila(UUID pilaId, LocalDateTime desde, LocalDateTime hasta) {
         validarPilaExiste(pilaId);
-        return lecturaRepository.findByPilaIdFiltered(pilaId, desde, hasta)
-                .stream()
-                .map(LecturaDTO::from)
-                .toList();
+
+        List<Lectura> lecturas;
+        if (desde != null && hasta != null) {
+            lecturas = lecturaRepository.findBySensor_Pila_IdAndTimestampBetweenOrderByTimestampDesc(
+                    pilaId, desde, hasta);
+        } else if (desde != null) {
+            lecturas = lecturaRepository.findBySensor_Pila_IdAndTimestampGreaterThanEqualOrderByTimestampDesc(
+                    pilaId, desde);
+        } else if (hasta != null) {
+            lecturas = lecturaRepository.findBySensor_Pila_IdAndTimestampLessThanEqualOrderByTimestampDesc(
+                    pilaId, hasta);
+        } else {
+            lecturas = lecturaRepository.findBySensor_Pila_IdOrderByTimestampDesc(pilaId);
+        }
+
+        return lecturas.stream().map(LecturaDTO::from).toList();
     }
 
     private void validarSensorExiste(UUID sensorId) {
