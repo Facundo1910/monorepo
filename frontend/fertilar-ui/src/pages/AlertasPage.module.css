@@ -1,12 +1,11 @@
 .page {
-  padding: 0 1.5rem 2.5rem;
-  max-width: 720px;
-  margin: 0 auto;
+  composes: page from '../styles/listPageShared.module.css';
 }
 
 .top {
-  margin-bottom: 1.75rem;
+  margin-bottom: 1rem;
   padding-top: 0.25rem;
+  flex-shrink: 0;
 }
 
 .heading {
@@ -22,25 +21,26 @@
   color: var(--ink-muted);
   margin-top: 0.45rem;
   line-height: 1.55;
-  max-width: 360px;
+  max-width: 520px;
 }
 
 .filters {
   display: flex;
   gap: 0.45rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .filterBtn {
   padding: 0.45rem 0.85rem;
-  border: none;
+  border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--paper);
   color: var(--ink-muted);
   font-size: 0.78rem;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
 .filterBtn:hover {
@@ -51,6 +51,7 @@
 .filterBtnActive {
   background: var(--sage-deep);
   color: var(--paper);
+  border-color: var(--sage-deep);
 }
 
 .filterBtnActive:hover {
@@ -59,44 +60,23 @@
 }
 
 .sheet {
-  background: var(--paper);
-  border-radius: var(--radius-xl);
-  padding: 1.25rem;
+  composes: sheet from '../styles/listPageShared.module.css';
 }
 
 .sheetInner {
-  background: var(--sage);
-  border-radius: var(--radius-lg);
-  padding: 1rem;
-  min-height: 120px;
+  composes: sheetInner from '../styles/listPageShared.module.css';
 }
 
 .listMeta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.25rem 0.5rem 0.85rem;
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 0.78rem;
+  composes: listMeta from '../styles/listPageShared.module.css';
 }
 
 .count {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--paper);
+  composes: count from '../styles/listPageShared.module.css';
 }
 
 .list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
+  composes: list from '../styles/listPageShared.module.css';
 }
 
 .row {
@@ -106,29 +86,21 @@
 }
 
 .card {
+  composes: cardBase from '../styles/listPageShared.module.css';
   flex: 1;
   display: flex;
   align-items: flex-start;
   gap: 0.85rem;
-  padding: 0.85rem 1rem;
-  background: rgba(255, 255, 255, 0.14);
-  border-radius: var(--radius-md);
-  transition: background 0.2s;
   cursor: pointer;
-  border: none;
+  border: 1px solid var(--line);
   min-width: 0;
   text-align: left;
   font-family: inherit;
 }
 
-.card:hover {
-  background: rgba(255, 255, 255, 0.22);
-}
-
 .nivel {
   font-size: 0.68rem;
-  font-weight: 500;
-  color: var(--paper);
+  font-weight: 600;
   padding: 0.25rem 0.55rem;
   border-radius: 999px;
   white-space: nowrap;
@@ -137,15 +109,18 @@
 }
 
 .nivelInfo {
-  background: rgba(255, 255, 255, 0.22);
+  background: #e3ece5;
+  color: var(--sage-deep);
 }
 
 .nivelAdvertencia {
-  background: rgba(255, 210, 120, 0.35);
+  background: #fff0c7;
+  color: #8a6200;
 }
 
 .nivelCritica {
-  background: rgba(180, 70, 70, 0.45);
+  background: #fde0e0;
+  color: #9b3a3a;
 }
 
 .info {
@@ -157,16 +132,11 @@
 }
 
 .tipo {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--paper);
-  letter-spacing: -0.01em;
+  composes: titleText from '../styles/listPageShared.module.css';
 }
 
 .mensaje {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.75);
-  line-height: 1.45;
+  composes: metaText from '../styles/listPageShared.module.css';
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -174,23 +144,17 @@
 }
 
 .meta {
-  font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.55);
+  composes: labelText from '../styles/listPageShared.module.css';
+  font-weight: 400;
 }
 
 .status {
-  font-size: 0.72rem;
-  color: var(--paper);
-  padding: 0.25rem 0.65rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.22);
-  white-space: nowrap;
+  composes: badge from '../styles/listPageShared.module.css';
   flex-shrink: 0;
 }
 
 .statusResuelta {
-  background: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.75);
+  composes: badgeMuted from '../styles/listPageShared.module.css';
 }
 
 .actions {
@@ -204,55 +168,51 @@
   height: 36px;
   border: none;
   border-radius: var(--radius-sm);
-  background: var(--paper);
+  background: var(--cream);
   color: var(--ink-soft);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.2s, transform 0.15s;
+  transition: opacity 0.2s, transform 0.15s, background 0.2s;
 }
 
 .actionBtn:hover {
-  opacity: 0.85;
+  background: var(--cream-deep);
   transform: scale(1.05);
 }
 
 .note {
-  margin-top: 1rem;
+  margin-top: 0.75rem;
   padding: 0 0.5rem;
   font-size: 0.75rem;
   color: var(--ink-muted);
   text-align: center;
+  flex-shrink: 0;
 }
 
 .empty {
-  padding: 2.5rem 1rem;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.88rem;
-  line-height: 1.55;
+  composes: empty from '../styles/listPageShared.module.css';
 }
 
 .loading {
-  padding: 2.5rem;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.88rem;
+  composes: loading from '../styles/listPageShared.module.css';
 }
 
 .error {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   padding: 0.85rem 1rem;
   background: var(--paper);
   border-radius: var(--radius-md);
   color: #8b4545;
   font-size: 0.85rem;
+  flex-shrink: 0;
+  border: 1px solid rgba(139, 69, 69, 0.15);
 }
 
 @media (max-width: 640px) {
   .page {
-    padding: 0 1rem 2rem;
+    padding: 0 1rem 1rem;
   }
 
   .heading {

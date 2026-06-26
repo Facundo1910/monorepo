@@ -1,5 +1,8 @@
 .root {
-  min-height: 100vh;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   background: var(--cream);
 }
 
@@ -8,8 +11,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 1.1rem 1.5rem;
-  position: sticky;
-  top: 0;
+  flex-shrink: 0;
   z-index: 100;
   background: var(--cream);
 }
@@ -164,6 +166,10 @@
 
 .main {
   flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 640px) {

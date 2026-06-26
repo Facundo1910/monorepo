@@ -1,7 +1,5 @@
 .page {
-  padding: 0 1.5rem 2.5rem;
-  max-width: 720px;
-  margin: 0 auto;
+  composes: page from '../styles/listPageShared.module.css';
 }
 
 .top {
@@ -11,6 +9,7 @@
   gap: 1rem;
   margin-bottom: 1rem;
   padding-top: 0.25rem;
+  flex-shrink: 0;
 }
 
 .heading {
@@ -26,7 +25,7 @@
   color: var(--ink-muted);
   margin-top: 0.45rem;
   line-height: 1.55;
-  max-width: 360px;
+  max-width: 520px;
 }
 
 .addBtn {
@@ -42,6 +41,7 @@
   justify-content: center;
   flex-shrink: 0;
   transition: background 0.2s, transform 0.15s;
+  box-shadow: 0 1px 3px rgba(42, 41, 38, 0.06);
 }
 
 .addBtn:hover {
@@ -58,110 +58,81 @@
 .filters {
   display: flex;
   gap: 0.65rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   flex-wrap: wrap;
   align-items: center;
-}
-
-.filterSelect {
-  padding: 0.45rem 0.85rem;
-  border: none;
-  border-radius: 999px;
-  background: var(--paper);
-  color: var(--ink-soft);
-  font-size: 0.78rem;
-  font-family: inherit;
-  cursor: pointer;
-  max-width: 100%;
-}
-
-.sheet {
-  background: var(--paper);
-  border-radius: var(--radius-xl);
-  padding: 1.25rem;
-}
-
-.sheetInner {
-  background: var(--sage);
-  border-radius: var(--radius-lg);
-  padding: 1rem;
-  min-height: 120px;
-}
-
-.listMeta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.25rem 0.5rem 0.85rem;
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 0.78rem;
-}
-
-.count {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--paper);
-}
-
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-}
-
-.card {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  padding: 0.85rem 1rem;
-  background: rgba(255, 255, 255, 0.14);
-  border-radius: var(--radius-md);
-  transition: background 0.2s;
-  cursor: pointer;
-  border: none;
-  width: 100%;
-  text-align: left;
-  font-family: inherit;
-}
-
-.card:hover {
-  background: rgba(255, 255, 255, 0.22);
-}
-
-.time {
-  font-size: 0.72rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.65);
-  min-width: 3.5rem;
   flex-shrink: 0;
 }
 
+.filterSelect {
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  font-family: inherit;
+  cursor: pointer;
+  max-width: 100%;
+  min-width: 200px;
+}
+
+.sheet {
+  composes: sheet from '../styles/listPageShared.module.css';
+}
+
+.sheetInner {
+  composes: sheetInner from '../styles/listPageShared.module.css';
+}
+
+.listMeta {
+  composes: listMeta from '../styles/listPageShared.module.css';
+}
+
+.count {
+  composes: count from '../styles/listPageShared.module.css';
+}
+
+.list {
+  composes: list from '../styles/listPageShared.module.css';
+}
+
+.card {
+  composes: cardBase from '../styles/listPageShared.module.css';
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid var(--line);
+}
+
+.card:hover {
+  border-color: rgba(109, 138, 120, 0.4);
+  box-shadow: 0 3px 10px rgba(42, 41, 38, 0.07);
+}
+
+.time {
+  composes: labelText from '../styles/listPageShared.module.css';
+  line-height: 1.35;
+}
+
 .info {
-  flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.25rem;
 }
 
 .sensor {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--paper);
-  letter-spacing: -0.01em;
+  composes: titleText from '../styles/listPageShared.module.css';
 }
 
 .metrics {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.65);
-  line-height: 1.45;
+  composes: metaText from '../styles/listPageShared.module.css';
 }
 
 .pagination {
@@ -169,7 +140,8 @@
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  margin-top: 1rem;
+  margin-top: 0.75rem;
+  flex-shrink: 0;
 }
 
 .pageBtn {
@@ -181,6 +153,7 @@
   font-size: 0.78rem;
   cursor: pointer;
   transition: background 0.2s;
+  box-shadow: 0 1px 2px rgba(42, 41, 38, 0.05);
 }
 
 .pageBtn:hover:not(:disabled) {
@@ -198,40 +171,36 @@
 }
 
 .note {
-  margin-top: 1rem;
+  margin-top: 0.75rem;
   padding: 0 0.5rem;
   font-size: 0.75rem;
   color: var(--ink-muted);
   text-align: center;
+  flex-shrink: 0;
 }
 
 .empty {
-  padding: 2.5rem 1rem;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.88rem;
-  line-height: 1.55;
+  composes: empty from '../styles/listPageShared.module.css';
 }
 
 .loading {
-  padding: 2.5rem;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.88rem;
+  composes: loading from '../styles/listPageShared.module.css';
 }
 
 .error {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   padding: 0.85rem 1rem;
   background: var(--paper);
   border-radius: var(--radius-md);
   color: #8b4545;
   font-size: 0.85rem;
+  flex-shrink: 0;
+  border: 1px solid rgba(139, 69, 69, 0.15);
 }
 
 @media (max-width: 640px) {
   .page {
-    padding: 0 1rem 2rem;
+    padding: 0 1rem 1rem;
   }
 
   .top {
@@ -242,11 +211,31 @@
     font-size: 1.65rem;
   }
 
-  .time {
-    display: none;
+  .card {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
   }
 
+  .filterSelect {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (min-width: 900px) {
   .card {
-    padding: 0.75rem;
+    grid-template-columns: 8.5rem 10rem 1fr;
+  }
+
+  .info {
+    display: contents;
+  }
+
+  .sensor {
+    grid-column: 2;
+  }
+
+  .metrics {
+    grid-column: 3;
   }
 }

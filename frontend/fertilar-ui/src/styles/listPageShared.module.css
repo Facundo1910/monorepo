@@ -1,0 +1,136 @@
+.page {
+  height: 100%;
+  padding: 0 1.25rem 1.25rem;
+  max-width: min(1120px, calc(100% - 1.5rem));
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.sheet {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--paper);
+  border-radius: var(--radius-xl);
+  padding: 0.85rem;
+  box-shadow: 0 2px 14px rgba(42, 41, 38, 0.06);
+}
+
+.sheetInner {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  background: var(--cream);
+  border-radius: calc(var(--radius-lg) - 4px);
+  padding: 0.85rem;
+}
+
+.sheetInner::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sheetInner::-webkit-scrollbar-thumb {
+  background: rgba(42, 41, 38, 0.18);
+  border-radius: 999px;
+}
+
+.sheetInner::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.listMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.15rem 0.35rem 0.75rem;
+  color: var(--ink-muted);
+  font-size: 0.78rem;
+  flex-shrink: 0;
+}
+
+.count {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--sage-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.cardBase {
+  padding: 0.9rem 1rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 2px rgba(42, 41, 38, 0.04);
+}
+
+.cardBase:hover {
+  border-color: rgba(109, 138, 120, 0.4);
+  box-shadow: 0 3px 10px rgba(42, 41, 38, 0.07);
+}
+
+.empty,
+.loading {
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: var(--ink-muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.loading {
+  padding: 2.5rem;
+}
+
+.titleText {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.metaText {
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.labelText {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--ink-muted);
+}
+
+.badge {
+  font-size: 0.72rem;
+  color: var(--ink);
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  background: var(--sage-muted);
+  white-space: nowrap;
+}
+
+.badgeMuted {
+  background: var(--cream-deep);
+  color: var(--ink-muted);
+}
