@@ -11,6 +11,7 @@ import SensoresPage from './pages/SensoresPage.tsx'
 import AlertasPage from './pages/AlertasPage.tsx'
 import LecturasPage from './pages/LecturasPage.tsx'
 import UmbralesPage from './pages/UmbralesPage.tsx'
+import CertificadosPage from './pages/CertificadosPage.tsx'
 
 export default function App() {
   return (
@@ -32,7 +33,7 @@ export default function App() {
           <Route path="/alertas" element={<AlertasPage />} />
           <Route path="/lecturas" element={<LecturasPage />} />
           <Route path="/umbrales" element={<UmbralesPage />} />
-
+          <Route path="/certificados" element={<CertificadosPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

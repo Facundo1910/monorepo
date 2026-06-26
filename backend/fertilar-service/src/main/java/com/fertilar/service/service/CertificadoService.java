@@ -10,6 +10,8 @@ public interface CertificadoService {
 
     CertificadoDTO generar(UUID pilaId, CertificadoRequest request, String authHeader);
 
+    List<CertificadoDTO> listar();
+
     List<CertificadoDTO> listarPorPila(UUID pilaId);
 
     CertificadoDTO obtener(UUID id);

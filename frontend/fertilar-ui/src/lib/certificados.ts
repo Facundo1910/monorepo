@@ -7,6 +7,10 @@ async function authFetch<T>(path: string, options?: RequestInit): Promise<T> {
   return apiFetch<T>(path, options, tokens?.idToken)
 }
 
+export function listCertificados(): Promise<Certificado[]> {
+  return authFetch<Certificado[]>('/certificados')
+}
+
 export function listCertificadosPorPila(pilaId: string): Promise<Certificado[]> {
   return authFetch<Certificado[]>(`/pilas/${pilaId}/certificados`)
 }

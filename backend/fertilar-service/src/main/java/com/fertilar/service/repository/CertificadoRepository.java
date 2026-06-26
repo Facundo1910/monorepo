@@ -13,6 +13,8 @@ public interface CertificadoRepository extends JpaRepository<Certificado, UUID> 
 
     List<Certificado> findByPilaId(UUID pilaId);
 
+    List<Certificado> findAllByOrderByFechaEmisionDescCreatedAtDesc();
+
     List<Certificado> findByUsuarioId(UUID usuarioId);
 
     @Query("SELECT MAX(c.numero) FROM Certificado c WHERE c.numero LIKE :patron")

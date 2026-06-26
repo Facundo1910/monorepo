@@ -75,6 +75,14 @@ public class CertificadoServiceImpl implements CertificadoService {
     }
 
     @Override
+    public List<CertificadoDTO> listar() {
+        return certificadoRepository.findAllByOrderByFechaEmisionDescCreatedAtDesc()
+                .stream()
+                .map(CertificadoDTO::from)
+                .toList();
+    }
+
+    @Override
     public List<CertificadoDTO> listarPorPila(UUID pilaId) {
         validarPilaExiste(pilaId);
         return certificadoRepository.findByPilaId(pilaId)

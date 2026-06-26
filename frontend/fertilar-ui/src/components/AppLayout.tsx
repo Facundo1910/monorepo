@@ -23,7 +23,7 @@ const NAV_ITEMS = [
   { to: '/alertas', label: 'alertas', icon: Bell, enabled: true },
   { to: '/lecturas', label: 'lecturas', icon: Activity, enabled: true },
   { to: '/umbrales', label: 'umbrales', icon: SlidersHorizontal, enabled: true },
-  { to: '/certificados', label: 'certificados', icon: Award, enabled: false },
+  { to: '/certificados', label: 'certificados', icon: Award, enabled: true },
 ] as const
 
 function getInitials(name: string): string {

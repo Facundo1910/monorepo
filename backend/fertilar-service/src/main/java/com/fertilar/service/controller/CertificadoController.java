@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -14,6 +15,11 @@ import java.util.UUID;
 public class CertificadoController {
 
     private final CertificadoService certificadoService;
+
+    @GetMapping
+    public ResponseEntity<List<CertificadoDTO>> listar() {
+        return ResponseEntity.ok(certificadoService.listar());
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<CertificadoDTO> obtener(@PathVariable UUID id) {
