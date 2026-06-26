@@ -67,6 +67,13 @@
             <version>2.25.60</version>
         </dependency>
 
+        <!-- AWS SDK v2 - S3 -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>2.25.60</version>
+        </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

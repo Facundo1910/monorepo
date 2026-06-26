@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Pencil, Plus, Trash2 } from 'lucide-react'
+import { ChevronRight, Pencil, Plus, Trash2 } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import PilaModal from '../components/PilaModal'
 import { useDialog } from '../context/DialogContext'
 import { createPila, deletePila, getPila, listPilas, updatePila } from '../lib/pilas'
@@ -125,18 +126,25 @@ export default function PilasPage() {
                 {pilas.map((pila, index) => (
                   <article key={pila.id} className={styles.card}>
                     <span className={styles.code}>{formatCodigo(index)}</span>
-                    <div className={styles.info}>
+                    <Link to={`/pilas/${pila.id}`} className={styles.info}>
                       <span className={styles.name}>{pila.nombre}</span>
                       <span className={styles.meta}>
                         {pila.ubicacion ?? 'sin ubicación'} · {formatDate(pila.fechaInicio)}
                       </span>
-                    </div>
+                    </Link>
                     <span
                       className={`${styles.status} ${pila.estado === 'PAUSADA' ? styles.statusPausa : ''} ${pila.estado === 'FINALIZADA' ? styles.statusFinal : ''}`}
                     >
                       {ESTADO_LABEL[pila.estado]}
                     </span>
                     <div className={styles.actions}>
+                      <Link
+                        to={`/pilas/${pila.id}`}
+                        className={styles.actionBtn}
+                        aria-label={`Ver detalle de ${pila.nombre}`}
+                      >
+                        <ChevronRight size={15} strokeWidth={1.5} />
+                      </Link>
                       <button
                         type="button"
                         className={styles.actionBtn}

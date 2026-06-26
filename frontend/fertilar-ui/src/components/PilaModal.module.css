@@ -151,6 +151,18 @@
   border-radius: var(--radius-sm);
 }
 
+.hint {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.hint strong {
+  font-weight: 500;
+  color: var(--ink);
+}
+
 .actions {
   display: flex;
   gap: 0.65rem;

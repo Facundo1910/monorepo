@@ -6,6 +6,7 @@ import AppLayout from './components/AppLayout'
 import LoginPage from './pages/LoginPage.tsx'
 import DashboardPage from './pages/DashboardPage.tsx'
 import PilasPage from './pages/PilasPage.tsx'
+import PilaDetailPage from './pages/PilaDetailPage.tsx'
 import SensoresPage from './pages/SensoresPage.tsx'
 import AlertasPage from './pages/AlertasPage.tsx'
 import LecturasPage from './pages/LecturasPage.tsx'
@@ -26,6 +27,7 @@ export default function App() {
         >
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/pilas" element={<PilasPage />} />
+          <Route path="/pilas/:id" element={<PilaDetailPage />} />
           <Route path="/sensores" element={<SensoresPage />} />
           <Route path="/alertas" element={<AlertasPage />} />
           <Route path="/lecturas" element={<LecturasPage />} />

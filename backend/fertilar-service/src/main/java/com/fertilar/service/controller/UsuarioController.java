@@ -1,7 +1,9 @@
 package com.fertilar.service.controller;
 
+import com.fertilar.service.dto.UsuarioDTO;
 import com.fertilar.service.entity.Usuario;
 import com.fertilar.service.repository.UsuarioRepository;
+import com.fertilar.service.service.UsuarioAuthService;
 import com.fertilar.service.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,13 @@ import org.springframework.web.bind.annotation.*;
 public class UsuarioController {
 
     private final UsuarioRepository usuarioRepository;
+    private final UsuarioAuthService usuarioAuthService;
+
+    @GetMapping("/me")
+    public ResponseEntity<UsuarioDTO> me(@RequestHeader("Authorization") String authHeader) {
+        Usuario usuario = usuarioAuthService.obtenerUsuarioAutenticado(authHeader);
+        return ResponseEntity.ok(UsuarioDTO.from(usuario));
+    }
 
     @PostMapping("/sync")
     public ResponseEntity<Void> sync(@RequestHeader("Authorization") String authHeader) {
