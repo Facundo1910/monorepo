@@ -11,19 +11,22 @@
 }
 
 .modal {
+  display: flex;
+  flex-direction: column;
   background: var(--paper);
   border-radius: var(--radius-xl);
   width: 100%;
   max-width: 420px;
-  max-height: 90vh;
-  overflow-y: auto;
+  max-height: min(90vh, 640px);
+  overflow: hidden;
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.5rem 1.5rem 0.5rem;
+  padding: 1.5rem 1.5rem 0.75rem;
+  flex-shrink: 0;
 }
 
 .title {
@@ -52,11 +55,49 @@
   color: var(--ink);
 }
 
+.formShell {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.formBody {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+  padding: 0.25rem 0.5rem 0.75rem 1.5rem;
+}
+
+.formBody::-webkit-scrollbar {
+  width: 6px;
+}
+
+.formBody::-webkit-scrollbar-thumb {
+  background: rgba(42, 41, 38, 0.2);
+  border-radius: 999px;
+}
+
+.formBody::-webkit-scrollbar-track {
+  background: transparent;
+  margin-block: 6px;
+}
+
 .form {
-  padding: 1rem 1.5rem 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
+  padding-right: 0.65rem;
+}
+
+.formFooter {
+  flex-shrink: 0;
+  padding: 0.85rem 1.5rem 1.35rem;
+  border-top: 1px solid var(--line);
+  background: var(--paper);
 }
 
 .field {
@@ -113,7 +154,6 @@
 .actions {
   display: flex;
   gap: 0.65rem;
-  padding-top: 0.25rem;
 }
 
 .cancelBtn {
@@ -157,5 +197,13 @@
 @media (max-width: 480px) {
   .row {
     grid-template-columns: 1fr;
+  }
+
+  .formBody {
+    padding-left: 1.25rem;
+  }
+
+  .formFooter {
+    padding-inline: 1.25rem;
   }
 }

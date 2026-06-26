@@ -10,7 +10,7 @@
 #define AUTH_USERNAME      "facubas39@gmail.com"
 #define AUTH_PASSWORD      "Facundo1905?"
 #define SENSOR_ID          "888204da-90a7-4270-b94b-d4534894129a"
-#define INTERVALO_ENVIO_MS 14400000   // cada 4 horas envia al backend
+#define INTERVALO_ENVIO_MS 60000   // cada 1 minuto envia al backend
 // ──────────────────────────────────────────────────────────────────────────
 
 // ─── LCD ──────────────────────────────────────────────────────────────────

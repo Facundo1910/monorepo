@@ -75,53 +75,59 @@ export default function AlertaModal({
           </button>
         </div>
 
-        <div className={styles.form}>
-          {error && <div className={styles.error}>{error}</div>}
+        <div className={styles.formShell}>
+          <div className={styles.formBody}>
+            <div className={styles.form}>
+              {error && <div className={styles.error}>{error}</div>}
 
-          <div className={styles.field}>
-            <span className={styles.label}>nivel</span>
-            <span className={styles.input}>{NIVEL_LABEL[alerta.nivel]}</span>
+              <div className={styles.field}>
+                <span className={styles.label}>nivel</span>
+                <span className={styles.input}>{NIVEL_LABEL[alerta.nivel]}</span>
+              </div>
+
+              <div className={styles.field}>
+                <span className={styles.label}>tipo</span>
+                <span className={styles.input}>{alerta.tipo}</span>
+              </div>
+
+              <div className={styles.field}>
+                <span className={styles.label}>pila</span>
+                <span className={styles.input}>{pila?.nombre ?? 'pila desconocida'}</span>
+              </div>
+
+              <div className={styles.field}>
+                <span className={styles.label}>mensaje</span>
+                <span className={styles.textarea} style={{ minHeight: 'auto' }}>{alerta.mensaje}</span>
+              </div>
+
+              <div className={styles.field}>
+                <span className={styles.label}>fecha</span>
+                <span className={styles.input}>{formatDateTime(alerta.createdAt)}</span>
+              </div>
+
+              <div className={styles.field}>
+                <span className={styles.label}>estado</span>
+                <span className={styles.input}>{alerta.resuelta ? 'Resuelta' : 'Pendiente'}</span>
+              </div>
+            </div>
           </div>
 
-          <div className={styles.field}>
-            <span className={styles.label}>tipo</span>
-            <span className={styles.input}>{alerta.tipo}</span>
-          </div>
-
-          <div className={styles.field}>
-            <span className={styles.label}>pila</span>
-            <span className={styles.input}>{pila?.nombre ?? 'pila desconocida'}</span>
-          </div>
-
-          <div className={styles.field}>
-            <span className={styles.label}>mensaje</span>
-            <span className={styles.textarea} style={{ minHeight: 'auto' }}>{alerta.mensaje}</span>
-          </div>
-
-          <div className={styles.field}>
-            <span className={styles.label}>fecha</span>
-            <span className={styles.input}>{formatDateTime(alerta.createdAt)}</span>
-          </div>
-
-          <div className={styles.field}>
-            <span className={styles.label}>estado</span>
-            <span className={styles.input}>{alerta.resuelta ? 'Resuelta' : 'Pendiente'}</span>
-          </div>
-
-          <div className={styles.actions}>
-            <button type="button" className={styles.cancelBtn} onClick={onClose}>
-              cerrar
-            </button>
-            {!alerta.resuelta && (
-              <button
-                type="button"
-                className={styles.submitBtn}
-                onClick={handleResolve}
-                disabled={resolving}
-              >
-                {resolving ? 'resolviendo…' : 'marcar resuelta'}
+          <div className={styles.formFooter}>
+            <div className={styles.actions}>
+              <button type="button" className={styles.cancelBtn} onClick={onClose}>
+                cerrar
               </button>
-            )}
+              {!alerta.resuelta && (
+                <button
+                  type="button"
+                  className={styles.submitBtn}
+                  onClick={handleResolve}
+                  disabled={resolving}
+                >
+                  {resolving ? 'resolviendo…' : 'marcar resuelta'}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

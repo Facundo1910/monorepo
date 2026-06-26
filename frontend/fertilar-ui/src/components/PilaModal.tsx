@@ -86,8 +86,10 @@ export default function PilaModal({ open, pila, onClose, onSave }: PilaModalProp
           </button>
         </div>
 
-        <form className={styles.form} onSubmit={handleSubmit}>
-          {error && <div className={styles.error}>{error}</div>}
+        <form className={styles.formShell} onSubmit={handleSubmit}>
+          <div className={styles.formBody}>
+            <div className={styles.form}>
+              {error && <div className={styles.error}>{error}</div>}
 
           <div className={styles.field}>
             <label className={styles.label} htmlFor="pila-nombre">nombre</label>
@@ -160,14 +162,18 @@ export default function PilaModal({ open, pila, onClose, onSave }: PilaModalProp
               ))}
             </select>
           </div>
+            </div>
+          </div>
 
-          <div className={styles.actions}>
-            <button type="button" className={styles.cancelBtn} onClick={onClose}>
-              cancelar
-            </button>
-            <button type="submit" className={styles.submitBtn} disabled={saving}>
-              {saving ? 'guardando…' : 'guardar'}
-            </button>
+          <div className={styles.formFooter}>
+            <div className={styles.actions}>
+              <button type="button" className={styles.cancelBtn} onClick={onClose}>
+                cancelar
+              </button>
+              <button type="submit" className={styles.submitBtn} disabled={saving}>
+                {saving ? 'guardando…' : 'guardar'}
+              </button>
+            </div>
           </div>
         </form>
       </div>

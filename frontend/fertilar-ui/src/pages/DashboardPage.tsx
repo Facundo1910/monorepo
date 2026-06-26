@@ -7,6 +7,7 @@ const MODULES = [
   { to: '/sensores', label: 'sensores', enabled: true },
   { to: '/alertas', label: 'alertas', enabled: true },
   { to: '/lecturas', label: 'lecturas', enabled: true },
+  { to: '/umbrales', label: 'umbrales', enabled: true },
   { to: '/certificados', label: 'certificados', enabled: false },
 ]
 

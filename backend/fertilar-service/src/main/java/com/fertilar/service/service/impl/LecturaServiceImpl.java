@@ -8,6 +8,7 @@ import com.fertilar.service.exception.ResourceNotFoundException;
 import com.fertilar.service.repository.LecturaRepository;
 import com.fertilar.service.repository.PilaRepository;
 import com.fertilar.service.repository.SensorRepository;
+import com.fertilar.service.service.AlertaEvaluacionService;
 import com.fertilar.service.service.LecturaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,7 @@ public class LecturaServiceImpl implements LecturaService {
     private final LecturaRepository lecturaRepository;
     private final SensorRepository sensorRepository;
     private final PilaRepository pilaRepository;
+    private final AlertaEvaluacionService alertaEvaluacionService;
 
     @Override
     @Transactional
@@ -50,7 +52,9 @@ public class LecturaServiceImpl implements LecturaService {
         lectura.setConductividad(request.getConductividad());
         lectura.setTimestamp(LocalDateTime.now());
 
-        return LecturaDTO.from(lecturaRepository.save(lectura));
+        Lectura guardada = lecturaRepository.save(lectura);
+        alertaEvaluacionService.evaluarLectura(guardada);
+        return LecturaDTO.from(guardada);
     }
 
     @Override

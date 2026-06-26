@@ -144,6 +144,22 @@
   opacity: 0.75;
 }
 
+.backLink {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.78rem;
+  color: var(--sage-deep);
+  font-family: inherit;
+  padding: 0;
+  margin-top: 1rem;
+  transition: opacity 0.15s;
+}
+
+.backLink:hover {
+  opacity: 0.75;
+}
+
 /* ───────── Checkbox ───────── */
 .checkboxRow {
   display: flex;
@@ -171,6 +187,14 @@
   font-size: 0.8rem;
   color: #8b4545;
   background: #f5ebe8;
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.75rem;
+}
+
+.success {
+  font-size: 0.8rem;
+  color: var(--sage-deep);
+  background: #e8efe9;
   border-radius: var(--radius-sm);
   padding: 0.55rem 0.75rem;
 }
