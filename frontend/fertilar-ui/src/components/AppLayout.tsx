@@ -9,6 +9,7 @@ import {
   LogOut,
   Menu,
   Radio,
+  SlidersHorizontal,
   X,
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
@@ -21,6 +22,7 @@ const NAV_ITEMS = [
   { to: '/sensores', label: 'sensores', icon: Radio, enabled: true },
   { to: '/alertas', label: 'alertas', icon: Bell, enabled: true },
   { to: '/lecturas', label: 'lecturas', icon: Activity, enabled: true },
+  { to: '/umbrales', label: 'umbrales', icon: SlidersHorizontal, enabled: true },
   { to: '/certificados', label: 'certificados', icon: Award, enabled: false },
 ] as const
 

@@ -131,8 +131,10 @@ export default function SensorModal({
           </button>
         </div>
 
-        <form className={styles.form} onSubmit={handleSubmit}>
-          {error && <div className={styles.error}>{error}</div>}
+        <form className={styles.formShell} onSubmit={handleSubmit}>
+          <div className={styles.formBody}>
+            <div className={styles.form}>
+              {error && <div className={styles.error}>{error}</div>}
 
           {!sensor && pilasDisponibles.length === 0 && (
             <div className={styles.error}>
@@ -219,18 +221,22 @@ export default function SensorModal({
               <option value="false">Inactivo</option>
             </select>
           </div>
+            </div>
+          </div>
 
-          <div className={styles.actions}>
-            <button type="button" className={styles.cancelBtn} onClick={onClose}>
-              cancelar
-            </button>
-            <button
-              type="submit"
-              className={styles.submitBtn}
-              disabled={saving || (!sensor && pilasDisponibles.length === 0)}
-            >
-              {saving ? 'guardando…' : 'guardar'}
-            </button>
+          <div className={styles.formFooter}>
+            <div className={styles.actions}>
+              <button type="button" className={styles.cancelBtn} onClick={onClose}>
+                cancelar
+              </button>
+              <button
+                type="submit"
+                className={styles.submitBtn}
+                disabled={saving || (!sensor && pilasDisponibles.length === 0)}
+              >
+                {saving ? 'guardando…' : 'guardar'}
+              </button>
+            </div>
           </div>
         </form>
       </div>

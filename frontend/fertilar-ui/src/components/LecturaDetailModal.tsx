@@ -55,30 +55,36 @@ export default function LecturaDetailModal({
           </button>
         </div>
 
-        <div className={styles.form}>
-          <div className={styles.field}>
-            <span className={styles.label}>sensor</span>
-            <span className={styles.input}>
-              {sensor ? `${sensor.codigo} · ${sensor.tipo}` : 'sensor desconocido'}
-            </span>
-          </div>
+        <div className={styles.formShell}>
+          <div className={styles.formBody}>
+            <div className={styles.form}>
+              <div className={styles.field}>
+                <span className={styles.label}>sensor</span>
+                <span className={styles.input}>
+                  {sensor ? `${sensor.codigo} · ${sensor.tipo}` : 'sensor desconocido'}
+                </span>
+              </div>
 
-          <div className={styles.field}>
-            <span className={styles.label}>fecha</span>
-            <span className={styles.input}>{formatDateTime(lectura.timestamp)}</span>
-          </div>
+              <div className={styles.field}>
+                <span className={styles.label}>fecha</span>
+                <span className={styles.input}>{formatDateTime(lectura.timestamp)}</span>
+              </div>
 
-          {fields.map((f) => (
-            <div key={f.label} className={styles.field}>
-              <span className={styles.label}>{f.label}</span>
-              <span className={styles.input}>{f.value}</span>
+              {fields.map((f) => (
+                <div key={f.label} className={styles.field}>
+                  <span className={styles.label}>{f.label}</span>
+                  <span className={styles.input}>{f.value}</span>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
 
-          <div className={styles.actions}>
-            <button type="button" className={styles.cancelBtn} onClick={onClose}>
-              cerrar
-            </button>
+          <div className={styles.formFooter}>
+            <div className={styles.actions}>
+              <button type="button" className={styles.cancelBtn} onClick={onClose}>
+                cerrar
+              </button>
+            </div>
           </div>
         </div>
       </div>

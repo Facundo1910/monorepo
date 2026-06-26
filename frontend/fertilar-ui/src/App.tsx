@@ -9,6 +9,7 @@ import PilasPage from './pages/PilasPage.tsx'
 import SensoresPage from './pages/SensoresPage.tsx'
 import AlertasPage from './pages/AlertasPage.tsx'
 import LecturasPage from './pages/LecturasPage.tsx'
+import UmbralesPage from './pages/UmbralesPage.tsx'
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/sensores" element={<SensoresPage />} />
           <Route path="/alertas" element={<AlertasPage />} />
           <Route path="/lecturas" element={<LecturasPage />} />
+          <Route path="/umbrales" element={<UmbralesPage />} />
 
         </Route>
         <Route path="*" element={<Navigate to="/login" replace />} />

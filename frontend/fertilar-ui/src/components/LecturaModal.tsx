@@ -123,8 +123,10 @@ export default function LecturaModal({
           </button>
         </div>
 
-        <form className={styles.form} onSubmit={handleSubmit}>
-          {error && <div className={styles.error}>{error}</div>}
+        <form className={styles.formShell} onSubmit={handleSubmit}>
+          <div className={styles.formBody}>
+            <div className={styles.form}>
+              {error && <div className={styles.error}>{error}</div>}
 
           {sensores.length === 0 && (
             <div className={styles.error}>
@@ -238,18 +240,22 @@ export default function LecturaModal({
               onChange={(e) => setForm({ ...form, conductividad: e.target.value })}
             />
           </div>
+            </div>
+          </div>
 
-          <div className={styles.actions}>
-            <button type="button" className={styles.cancelBtn} onClick={onClose}>
-              cancelar
-            </button>
-            <button
-              type="submit"
-              className={styles.submitBtn}
-              disabled={saving || sensores.length === 0}
-            >
-              {saving ? 'guardando…' : 'guardar'}
-            </button>
+          <div className={styles.formFooter}>
+            <div className={styles.actions}>
+              <button type="button" className={styles.cancelBtn} onClick={onClose}>
+                cancelar
+              </button>
+              <button
+                type="submit"
+                className={styles.submitBtn}
+                disabled={saving || sensores.length === 0}
+              >
+                {saving ? 'guardando…' : 'guardar'}
+              </button>
+            </div>
           </div>
         </form>
       </div>
