@@ -36,6 +36,12 @@ public class UsuarioAuthServiceImpl implements UsuarioAuthService {
         }
 
         return usuarioRepository.findByCognitoSub(sub)
+                .map(usuario -> {
+                    if (!Boolean.TRUE.equals(usuario.getActivo())) {
+                        throw new AccessDeniedException("Usuario desactivado");
+                    }
+                    return usuario;
+                })
                 .orElseThrow(() -> new UnauthorizedException("Usuario no registrado"));
     }
 

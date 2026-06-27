@@ -70,7 +70,6 @@ export default function CertificadoModal({
                   className={styles.textarea}
                   value={observaciones}
                   onChange={(e) => setObservaciones(e.target.value)}
-                  placeholder="Opcional"
                   rows={4}
                 />
               </div>

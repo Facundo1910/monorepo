@@ -166,7 +166,6 @@ export default function SensorModal({
               className={styles.input}
               value={form.codigo}
               onChange={(e) => setForm({ ...form, codigo: e.target.value })}
-              placeholder="S-001"
               required
             />
           </div>
@@ -191,7 +190,6 @@ export default function SensorModal({
                 className={styles.input}
                 value={form.tipo}
                 onChange={(e) => setForm({ ...form, tipo: e.target.value })}
-                placeholder="Describí el tipo de sensor"
                 required
                 style={{ marginTop: '0.4rem' }}
               />
@@ -205,7 +203,6 @@ export default function SensorModal({
               className={styles.textarea}
               value={form.descripcion ?? ''}
               onChange={(e) => setForm({ ...form, descripcion: e.target.value })}
-              placeholder="Opcional"
             />
           </div>
 

@@ -15,6 +15,7 @@ public class UsuarioDTO {
     private String nombre;
     private String apellido;
     private Usuario.Rol rol;
+    private Boolean activo;
 
     public static UsuarioDTO from(Usuario usuario) {
         return UsuarioDTO.builder()
@@ -23,6 +24,7 @@ public class UsuarioDTO {
                 .nombre(usuario.getNombre())
                 .apellido(usuario.getApellido())
                 .rol(usuario.getRol())
+                .activo(usuario.getActivo())
                 .build();
     }
 }

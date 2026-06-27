@@ -12,6 +12,8 @@ import AlertasPage from './pages/AlertasPage.tsx'
 import LecturasPage from './pages/LecturasPage.tsx'
 import UmbralesPage from './pages/UmbralesPage.tsx'
 import CertificadosPage from './pages/CertificadosPage.tsx'
+import UsuariosPage from './pages/UsuariosPage.tsx'
+import AdminRoute from './components/AdminRoute.tsx'
 
 export default function App() {
   return (
@@ -34,6 +36,14 @@ export default function App() {
           <Route path="/lecturas" element={<LecturasPage />} />
           <Route path="/umbrales" element={<UmbralesPage />} />
           <Route path="/certificados" element={<CertificadosPage />} />
+          <Route
+            path="/usuarios"
+            element={
+              <AdminRoute>
+                <UsuariosPage />
+              </AdminRoute>
+            }
+          />
         </Route>
         <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

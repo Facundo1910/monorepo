@@ -98,7 +98,6 @@ export default function PilaModal({ open, pila, onClose, onSave }: PilaModalProp
               className={styles.input}
               value={form.nombre}
               onChange={(e) => setForm({ ...form, nombre: e.target.value })}
-              placeholder="Pila norte A"
               required
             />
           </div>
@@ -110,7 +109,6 @@ export default function PilaModal({ open, pila, onClose, onSave }: PilaModalProp
               className={styles.input}
               value={form.ubicacion ?? ''}
               onChange={(e) => setForm({ ...form, ubicacion: e.target.value })}
-              placeholder="Galpón 1"
             />
           </div>
 
@@ -121,7 +119,6 @@ export default function PilaModal({ open, pila, onClose, onSave }: PilaModalProp
               className={styles.textarea}
               value={form.descripcion ?? ''}
               onChange={(e) => setForm({ ...form, descripcion: e.target.value })}
-              placeholder="Opcional"
             />
           </div>
 

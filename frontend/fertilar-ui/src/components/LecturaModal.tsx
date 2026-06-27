@@ -161,7 +161,6 @@ export default function LecturaModal({
                 className={styles.input}
                 value={form.temperatura}
                 onChange={(e) => setForm({ ...form, temperatura: e.target.value })}
-                placeholder="25.5"
               />
             </div>
             <div className={styles.field}>
@@ -173,7 +172,6 @@ export default function LecturaModal({
                 className={styles.input}
                 value={form.humedad}
                 onChange={(e) => setForm({ ...form, humedad: e.target.value })}
-                placeholder="60"
               />
             </div>
           </div>
@@ -224,7 +222,6 @@ export default function LecturaModal({
                 className={styles.input}
                 value={form.ph}
                 onChange={(e) => setForm({ ...form, ph: e.target.value })}
-                placeholder="6.5"
               />
             </div>
           </div>

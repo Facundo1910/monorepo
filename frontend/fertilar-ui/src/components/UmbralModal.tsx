@@ -166,7 +166,6 @@ export default function UmbralModal({
                 className={styles.input}
                 value={form.valorMin}
                 onChange={(e) => setForm({ ...form, valorMin: e.target.value })}
-                placeholder="Opcional"
               />
             </div>
             <div className={styles.field}>
@@ -180,7 +179,6 @@ export default function UmbralModal({
                 className={styles.input}
                 value={form.valorMax}
                 onChange={(e) => setForm({ ...form, valorMax: e.target.value })}
-                placeholder="Opcional"
               />
             </div>
           </div>
