@@ -42,6 +42,9 @@ public class Lectura {
     @Column(precision = 8, scale = 2)
     private BigDecimal conductividad;
 
+    @Column(precision = 8, scale = 2)
+    private BigDecimal oxigeno;
+
     @Column(nullable = false)
     private LocalDateTime timestamp = LocalDateTime.now(ZoneId.of("America/Argentina/Buenos_Aires"));
 }

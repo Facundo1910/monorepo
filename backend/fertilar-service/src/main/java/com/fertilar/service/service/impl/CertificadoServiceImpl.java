@@ -11,7 +11,9 @@ import com.fertilar.service.exception.ResourceNotFoundException;
 import com.fertilar.service.repository.CertificadoRepository;
 import com.fertilar.service.repository.LecturaRepository;
 import com.fertilar.service.repository.PilaRepository;
+import com.fertilar.service.dto.PilaFasesDTO;
 import com.fertilar.service.service.CertificadoService;
+import com.fertilar.service.service.FaseEvaluacionService;
 import com.fertilar.service.service.S3StorageService;
 import com.fertilar.service.service.UsuarioAuthService;
 import com.fertilar.service.util.CertificadoHtmlGenerator;
@@ -33,6 +35,7 @@ public class CertificadoServiceImpl implements CertificadoService {
     private final CertificadoRepository certificadoRepository;
     private final PilaRepository pilaRepository;
     private final LecturaRepository lecturaRepository;
+    private final FaseEvaluacionService faseEvaluacionService;
     private final S3StorageService s3StorageService;
     private final UsuarioAuthService usuarioAuthService;
 
@@ -45,13 +48,16 @@ public class CertificadoServiceImpl implements CertificadoService {
         Pila pila = pilaRepository.findById(pilaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Pila", pilaId));
 
-        if (pila.getEstado() != Pila.Estado.FINALIZADA) {
-            throw new IllegalStateException("La pila debe estar en estado FINALIZADA para emitir un certificado");
-        }
-
         List<Lectura> lecturas = lecturaRepository.findBySensor_Pila_IdOrderByTimestampDesc(pilaId);
         if (lecturas.isEmpty()) {
             throw new IllegalStateException("La pila no tiene lecturas registradas");
+        }
+
+        PilaFasesDTO fases = faseEvaluacionService.evaluar(pilaId);
+        if (!fases.isAptoParaCertificar()) {
+            throw new IllegalStateException(fases.getMotivoNoCertificable() != null
+                    ? fases.getMotivoNoCertificable()
+                    : "La pila no cumple los requisitos para certificar");
         }
 
         EstadisticasLecturaDTO estadisticas = calcularEstadisticas(lecturas);

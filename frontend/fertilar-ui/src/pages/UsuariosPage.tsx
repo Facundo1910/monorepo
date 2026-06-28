@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Pencil, Plus } from 'lucide-react'
+import ListSearchBar from '../components/ListSearchBar'
 import UsuarioModal from '../components/UsuarioModal'
 import { useDialog } from '../context/DialogContext'
 import { createUsuario, getUsuario, listUsuarios, updateUsuario } from '../lib/usuarios'
@@ -10,6 +11,7 @@ import type {
   UsuarioUpdateRequest,
 } from '../types/usuario'
 import { ROL_LABEL } from '../types/usuario'
+import { matchesSearch } from '../utils/searchText'
 import styles from './UsuariosPage.module.css'
 
 export default function UsuariosPage() {
@@ -19,6 +21,24 @@ export default function UsuariosPage() {
   const [error, setError] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
   const [editingUsuario, setEditingUsuario] = useState<Usuario | null>(null)
+  const [search, setSearch] = useState('')
+
+  const usuariosFiltrados = useMemo(
+    () =>
+      usuarios.filter((usuario) =>
+        matchesSearch(
+          search,
+          usuario.nombre,
+          usuario.apellido,
+          `${usuario.nombre} ${usuario.apellido}`,
+          usuario.email,
+          ROL_LABEL[usuario.rol as UsuarioRol],
+          usuario.rol,
+          usuario.activo ? 'activo' : 'inactivo',
+        ),
+      ),
+    [usuarios, search],
+  )
 
   const loadData = useCallback(async () => {
     setLoading(true)
@@ -81,17 +101,29 @@ export default function UsuariosPage() {
 
       {error && <div className={styles.error}>{error}</div>}
 
+      {!loading && (
+        <div className={styles.toolbar}>
+          <ListSearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder="Buscar por nombre, email o rol…"
+          />
+        </div>
+      )}
+
       <div className={styles.sheet}>
         <div className={styles.sheetInner}>
           {loading ? (
             <div className={styles.loading}>cargando…</div>
           ) : usuarios.length === 0 ? (
             <div className={styles.empty}>Todavía no hay usuarios registrados.</div>
+          ) : usuariosFiltrados.length === 0 ? (
+            <div className={styles.empty}>No hay usuarios que coincidan con la búsqueda.</div>
           ) : (
             <>
               <div className={styles.listMeta}>
                 <span>registrados</span>
-                <span className={styles.count}>{usuarios.length}</span>
+                <span className={styles.count}>{usuariosFiltrados.length}</span>
               </div>
               <div className={styles.tableWrap}>
                 <table className={styles.table}>
@@ -105,7 +137,7 @@ export default function UsuariosPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {usuarios.map((usuario) => (
+                    {usuariosFiltrados.map((usuario) => (
                       <tr key={usuario.id}>
                         <td>
                           {usuario.nombre} {usuario.apellido}

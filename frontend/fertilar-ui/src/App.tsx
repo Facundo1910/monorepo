@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useParams } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { DialogProvider } from './context/DialogContext'
 import PrivateRoute from './components/PrivateRoute'
@@ -14,6 +14,11 @@ import UmbralesPage from './pages/UmbralesPage.tsx'
 import CertificadosPage from './pages/CertificadosPage.tsx'
 import UsuariosPage from './pages/UsuariosPage.tsx'
 import AdminRoute from './components/AdminRoute.tsx'
+
+function RedirectCertificacionPila() {
+  const { id } = useParams<{ id: string }>()
+  return <Navigate to={id ? `/certificados?pila=${id}` : '/certificados'} replace />
+}
 
 export default function App() {
   return (
@@ -31,6 +36,7 @@ export default function App() {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/pilas" element={<PilasPage />} />
           <Route path="/pilas/:id" element={<PilaDetailPage />} />
+          <Route path="/pilas/:id/certificacion" element={<RedirectCertificacionPila />} />
           <Route path="/sensores" element={<SensoresPage />} />
           <Route path="/alertas" element={<AlertasPage />} />
           <Route path="/lecturas" element={<LecturasPage />} />

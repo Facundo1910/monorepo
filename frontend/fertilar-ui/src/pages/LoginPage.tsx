@@ -3,7 +3,6 @@ import type { FormEvent, ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { CognitoUser } from 'amazon-cognito-identity-js'
 import styles from './LoginPage.module.css'
-import AppBrand from '../components/AppBrand'
 import {
   signIn,
   confirmNewPassword,
@@ -20,7 +19,6 @@ function AuthShell({ children }: { children: ReactNode }) {
       <div className={styles.hero}>
         <div className={styles.heroOverlay} />
         <div className={styles.heroBranding}>
-          <AppBrand variant="light" />
           <p className={styles.heroTagline}>
             Sistema de Telemetría y Trazabilidad para el Monitoreo del
             Compostaje de Guano Avícola
@@ -30,9 +28,6 @@ function AuthShell({ children }: { children: ReactNode }) {
 
       <div className={styles.formPanel}>
         <div className={styles.formCard}>
-          <div className={styles.formBrand}>
-            <AppBrand />
-          </div>
           {children}
         </div>
       </div>

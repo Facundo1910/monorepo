@@ -67,6 +67,41 @@
   composes: listMeta from '../styles/listPageShared.module.css';
 }
 
+.toolbar {
+  composes: toolbar from '../styles/listPageShared.module.css';
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.summaryItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.65rem 0.5rem;
+  background: var(--paper);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+}
+
+.summaryValue {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.summaryLabel {
+  font-size: 0.68rem;
+  color: var(--ink-muted);
+  text-align: center;
+}
+
 .count {
   composes: count from '../styles/listPageShared.module.css';
 }
@@ -186,5 +221,9 @@
 
   .card {
     padding: 0.75rem;
+  }
+
+  .summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

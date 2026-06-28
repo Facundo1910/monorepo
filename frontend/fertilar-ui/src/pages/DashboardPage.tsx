@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import ListSearchBar from '../components/ListSearchBar'
 import PilaDashboardCard from '../components/PilaDashboardCard'
 import { listAlertasPorPila } from '../lib/alertas'
 import { listLecturasPorPila } from '../lib/lecturas'
@@ -6,6 +7,7 @@ import { getPila, listPilas } from '../lib/pilas'
 import type { Alerta } from '../types/alerta'
 import type { Lectura } from '../types/lectura'
 import type { Pila } from '../types/pila'
+import { matchesSearch } from '../utils/searchText'
 import styles from './DashboardPage.module.css'
 
 type PilaDashboardData = {
@@ -30,6 +32,15 @@ export default function DashboardPage() {
   const [items, setItems] = useState<PilaDashboardData[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [search, setSearch] = useState('')
+
+  const itemsFiltrados = useMemo(
+    () =>
+      items.filter(({ pila }) =>
+        matchesSearch(search, pila.nombre, pila.ubicacion, pila.descripcion, pila.estado),
+      ),
+    [items, search],
+  )
 
   const loadData = useCallback(async () => {
     setLoading(true)
@@ -61,6 +72,16 @@ export default function DashboardPage() {
 
       {error && <p className={styles.error}>{error}</p>}
 
+      {!loading && items.length > 0 && (
+        <div className={styles.toolbar}>
+          <ListSearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder="Buscar pila por nombre o ubicación…"
+          />
+        </div>
+      )}
+
       {loading ? (
         <p className={styles.loading}>Cargando pilas activas…</p>
       ) : items.length === 0 ? (
@@ -68,9 +89,13 @@ export default function DashboardPage() {
           <p>No hay pilas activas en este momento.</p>
           <p className={styles.emptyHint}>Creá una pila o reactivá una existente desde la sección pilas.</p>
         </div>
+      ) : itemsFiltrados.length === 0 ? (
+        <div className={styles.empty}>
+          <p>No hay pilas que coincidan con la búsqueda.</p>
+        </div>
       ) : (
         <div className={styles.grid}>
-          {items.map((item) => (
+          {itemsFiltrados.map((item) => (
             <PilaDashboardCard
               key={item.pila.id}
               pila={item.pila}

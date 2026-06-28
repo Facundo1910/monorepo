@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Plus } from 'lucide-react'
 import LecturaDetailModal from '../components/LecturaDetailModal'
-import LecturaModal from '../components/LecturaModal'
-import { createLectura, listLecturas, listLecturasPorSensor } from '../lib/lecturas'
+import ListSearchBar from '../components/ListSearchBar'
+import { listLecturas, listLecturasPorSensor } from '../lib/lecturas'
 import { listSensores } from '../lib/sensores'
-import type { Lectura, LecturaRequest } from '../types/lectura'
+import type { Lectura } from '../types/lectura'
 import type { SensorResumen } from '../types/sensor'
+import { matchesSearch } from '../utils/searchText'
 import styles from './LecturasPage.module.css'
 
 const PAGE_SIZE = 20
@@ -30,9 +30,11 @@ function summarizeMetrics(lectura: Lectura): string {
     formatMetric(lectura.temperatura, 'temp.', '°C'),
     formatMetric(lectura.humedad, 'hum.', '%'),
     formatMetric(lectura.ph, 'pH'),
+    formatMetric(lectura.oxigeno, 'O₂', '%'),
     formatMetric(lectura.nitrogeno, 'N'),
     formatMetric(lectura.fosforo, 'P'),
     formatMetric(lectura.potasio, 'K'),
+    formatMetric(lectura.conductividad, 'cond.'),
   ].filter(Boolean)
   return parts.length > 0 ? parts.join(' · ') : 'sin mediciones'
 }
@@ -46,12 +48,27 @@ export default function LecturasPage() {
   const [totalElements, setTotalElements] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [createOpen, setCreateOpen] = useState(false)
   const [selectedLectura, setSelectedLectura] = useState<Lectura | null>(null)
+  const [search, setSearch] = useState('')
 
   const sensorPorId = useMemo(
     () => new Map(sensores.map((s) => [s.id, s])),
     [sensores],
+  )
+
+  const lecturasFiltradas = useMemo(
+    () =>
+      lecturas.filter((lectura) => {
+        const sensor = sensorPorId.get(lectura.sensorId)
+        return matchesSearch(
+          search,
+          sensor?.codigo,
+          sensor?.tipo,
+          formatTime(lectura.timestamp),
+          summarizeMetrics(lectura),
+        )
+      }),
+    [lecturas, sensorPorId, search],
   )
 
   const loadData = useCallback(async (currentPage: number, filterSensorId: string) => {
@@ -85,40 +102,25 @@ export default function LecturasPage() {
 
   const handleSensorFilterChange = (value: string) => {
     setSensorFilter(value)
+    setSearch('')
     setPage(0)
-  }
-
-  const handleSave = async (data: LecturaRequest) => {
-    await createLectura(data)
-    setPage(0)
-    await loadData(0, sensorFilter)
   }
 
   const emptyMessage = sensorFilter
     ? 'Este sensor no tiene lecturas registradas.'
     : sensores.length === 0
-      ? 'Primero registrá un sensor para poder cargar lecturas.'
-      : 'Todavía no hay lecturas.\nTocá + para registrar la primera.'
+      ? 'Primero registrá un sensor para que pueda enviar lecturas.'
+      : 'Todavía no hay lecturas.\nLas mediciones se cargan automáticamente desde los sensores.'
 
   return (
     <div className={styles.page}>
-      <div className={styles.top}>
-        <div>
-          <h1 className={styles.heading}>Lecturas</h1>
-          <p className={styles.sub}>
-            Mediciones de sensores: temperatura, humedad, nutrientes y más.
-          </p>
-        </div>
-        <button
-          type="button"
-          className={styles.addBtn}
-          onClick={() => setCreateOpen(true)}
-          aria-label="Nueva lectura"
-          disabled={!loading && sensores.length === 0}
-        >
-          <Plus size={22} strokeWidth={1.5} />
-        </button>
-      </div>
+      <header className={styles.top}>
+        <h1 className={styles.heading}>Lecturas</h1>
+        <p className={styles.sub}>
+          Historial de mediciones enviadas automáticamente por los sensores: temperatura, humedad,
+          nutrientes y más.
+        </p>
+      </header>
 
       <div className={styles.filters}>
         <select
@@ -131,6 +133,13 @@ export default function LecturasPage() {
             <option key={s.id} value={s.id}>{s.codigo} · {s.tipo}</option>
           ))}
         </select>
+        {!loading && (
+          <ListSearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder="Buscar por sensor, fecha o medición…"
+          />
+        )}
       </div>
 
       {error && <div className={styles.error}>{error}</div>}
@@ -148,16 +157,18 @@ export default function LecturasPage() {
                 </span>
               ))}
             </div>
+          ) : lecturasFiltradas.length === 0 ? (
+            <div className={styles.empty}>No hay lecturas que coincidan con la búsqueda.</div>
           ) : (
             <>
               <div className={styles.listMeta}>
                 <span>{sensorFilter ? 'últimas lecturas' : 'registradas'}</span>
                 <span className={styles.count}>
-                  {sensorFilter ? lecturas.length : totalElements}
+                  {search ? lecturasFiltradas.length : sensorFilter ? lecturas.length : totalElements}
                 </span>
               </div>
               <div className={styles.list}>
-                {lecturas.map((lectura) => {
+                {lecturasFiltradas.map((lectura) => {
                   const sensor = sensorPorId.get(lectura.sensorId)
                   return (
                     <button
@@ -213,13 +224,6 @@ export default function LecturasPage() {
             : `${totalElements} ${totalElements === 1 ? 'lectura' : 'lecturas'} en total`}
         </p>
       )}
-
-      <LecturaModal
-        open={createOpen}
-        sensores={sensores}
-        onClose={() => setCreateOpen(false)}
-        onSave={handleSave}
-      />
 
       <LecturaDetailModal
         open={selectedLectura !== null}

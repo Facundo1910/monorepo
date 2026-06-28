@@ -46,6 +46,15 @@
   background: transparent;
 }
 
+.toolbar {
+  display: flex;
+  gap: 0.65rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+  flex-shrink: 0;
+}
+
 .listMeta {
   display: flex;
   align-items: center;

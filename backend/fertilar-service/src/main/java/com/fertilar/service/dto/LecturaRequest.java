@@ -19,4 +19,5 @@ public class LecturaRequest {
     private BigDecimal potasio;
     private BigDecimal ph;
     private BigDecimal conductividad;
+    private BigDecimal oxigeno;
 }

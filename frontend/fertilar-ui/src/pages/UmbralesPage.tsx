@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Pencil, Plus, Trash2 } from 'lucide-react'
+import ListSearchBar from '../components/ListSearchBar'
 import UmbralModal, { PARAMETROS } from '../components/UmbralModal'
 import { useDialog } from '../context/DialogContext'
 import { listPilas } from '../lib/pilas'
@@ -12,6 +13,7 @@ import {
 } from '../lib/umbrales'
 import type { PilaResumen } from '../types/pila'
 import type { Umbral, UmbralNivel, UmbralRequest } from '../types/umbral'
+import { matchesSearch } from '../utils/searchText'
 import styles from './UmbralesPage.module.css'
 
 const NIVEL_LABEL: Record<UmbralNivel, string> = {
@@ -55,6 +57,7 @@ export default function UmbralesPage() {
   const [error, setError] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
   const [editingUmbral, setEditingUmbral] = useState<Umbral | null>(null)
+  const [search, setSearch] = useState('')
 
   const loadPilas = useCallback(async () => {
     try {
@@ -92,8 +95,29 @@ export default function UmbralesPage() {
     loadUmbrales(pilaId)
   }, [pilaId, loadUmbrales])
 
+  useEffect(() => {
+    setSearch('')
+  }, [pilaId])
+
   const selectedPila = pilas.find((p) => p.id === pilaId)
   const activos = umbrales.filter((u) => u.activo).length
+
+  const umbralesFiltrados = useMemo(
+    () =>
+      umbrales.filter((umbral) => {
+        const meta = parametroMeta.get(umbral.parametro)
+        return matchesSearch(
+          search,
+          umbral.parametro,
+          meta?.label,
+          NIVEL_LABEL[umbral.nivel],
+          umbral.nivel,
+          formatRango(umbral),
+          umbral.activo ? 'activo' : 'inactivo',
+        )
+      }),
+    [umbrales, search],
+  )
 
   const handleNew = () => {
     setEditingUmbral(null)
@@ -178,6 +202,13 @@ export default function UmbralesPage() {
             ))
           )}
         </select>
+        {!loading && (
+          <ListSearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder="Buscar por parámetro, nivel o rango…"
+          />
+        )}
       </div>
 
       {error && <div className={styles.error}>{error}</div>}
@@ -195,14 +226,16 @@ export default function UmbralesPage() {
                 </span>
               ))}
             </div>
+          ) : umbralesFiltrados.length === 0 ? (
+            <div className={styles.empty}>No hay umbrales que coincidan con la búsqueda.</div>
           ) : (
             <>
               <div className={styles.listMeta}>
                 <span>{selectedPila?.nombre ?? 'pila'}</span>
-                <span className={styles.count}>{umbrales.length}</span>
+                <span className={styles.count}>{umbralesFiltrados.length}</span>
               </div>
               <div className={styles.list}>
-                {umbrales.map((umbral) => {
+                {umbralesFiltrados.map((umbral) => {
                   const meta = parametroMeta.get(umbral.parametro)
                   return (
                     <article key={umbral.id} className={styles.card}>

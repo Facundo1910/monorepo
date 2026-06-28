@@ -8,6 +8,7 @@ export type Lectura = {
   potasio: number | null
   ph: number | null
   conductividad: number | null
+  oxigeno: number | null
   timestamp: string
 }
 
@@ -20,6 +21,7 @@ export type LecturaRequest = {
   potasio?: number
   ph?: number
   conductividad?: number
+  oxigeno?: number
 }
 
 export type LecturaPage = {

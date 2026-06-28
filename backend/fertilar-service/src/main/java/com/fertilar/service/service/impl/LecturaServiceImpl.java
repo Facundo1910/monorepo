@@ -50,6 +50,7 @@ public class LecturaServiceImpl implements LecturaService {
         lectura.setPotasio(request.getPotasio());
         lectura.setPh(request.getPh());
         lectura.setConductividad(request.getConductividad());
+        lectura.setOxigeno(request.getOxigeno());
         lectura.setTimestamp(LocalDateTime.now());
 
         Lectura guardada = lecturaRepository.save(lectura);

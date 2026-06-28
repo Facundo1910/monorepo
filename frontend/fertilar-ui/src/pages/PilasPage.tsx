@@ -1,41 +1,82 @@
-import { useCallback, useEffect, useState } from 'react'
-import { ChevronRight, Pencil, Plus, Trash2 } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ChevronRight, Pencil, Plus, PauseCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import ListSearchBar from '../components/ListSearchBar'
 import PilaModal from '../components/PilaModal'
 import { useDialog } from '../context/DialogContext'
-import { createPila, deletePila, getPila, listPilas, updatePila } from '../lib/pilas'
+import { createPila, getPila, listPilas, updatePila } from '../lib/pilas'
+import { listSensores } from '../lib/sensores'
 import type { Pila, PilaEstado, PilaRequest, PilaResumen } from '../types/pila'
+import type { SensorResumen } from '../types/sensor'
+import { matchesSearch } from '../utils/searchText'
 import styles from './PilasPage.module.css'
 
 const ESTADO_LABEL: Record<PilaEstado, string> = {
-  ACTIVA: 'activa',
-  PAUSADA: 'en pausa',
-  FINALIZADA: 'finalizada',
+  ACTIVA: 'Activa',
+  PAUSADA: 'En pausa',
+  FINALIZADA: 'Finalizada',
 }
 
 function formatCodigo(index: number): string {
   return `P-${String(index + 1).padStart(2, '0')}`
 }
 
-function formatDate(date: string): string {
-  const [y, m, d] = date.split('-')
-  return `${d}/${m}/${y}`
+function toRequest(pila: Pila, overrides: Partial<PilaRequest> = {}): PilaRequest {
+  return {
+    nombre: pila.nombre,
+    descripcion: pila.descripcion ?? undefined,
+    ubicacion: pila.ubicacion ?? undefined,
+    fechaInicio: pila.fechaInicio,
+    fechaFin: pila.fechaFin ?? undefined,
+    diasEstimados: pila.diasEstimados,
+    humedadObjetivo: pila.humedadObjetivo,
+    temperaturaObjetivo: pila.temperaturaObjetivo,
+    estado: pila.estado,
+    ...overrides,
+  }
 }
 
 export default function PilasPage() {
   const dialog = useDialog()
   const [pilas, setPilas] = useState<PilaResumen[]>([])
+  const [sensores, setSensores] = useState<SensorResumen[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
   const [editingPila, setEditingPila] = useState<Pila | null>(null)
+  const [search, setSearch] = useState('')
+
+  const sensorPorPila = useMemo(
+    () => new Map(sensores.map((s) => [s.pilaId, s])),
+    [sensores],
+  )
+
+  const pilasFiltradas = useMemo(
+    () =>
+      pilas
+        .map((pila, index) => ({ pila, index }))
+        .filter(({ pila, index }) => {
+          const sensor = sensorPorPila.get(pila.id)
+          return matchesSearch(
+            search,
+            formatCodigo(index),
+            pila.nombre,
+            pila.ubicacion,
+            ESTADO_LABEL[pila.estado],
+            sensor?.codigo,
+            sensor ? 'con sensor' : 'sin sensor',
+          )
+        }),
+    [pilas, sensorPorPila, search],
+  )
 
   const loadPilas = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
-      const data = await listPilas()
-      setPilas(data)
+      const [pilasData, sensoresData] = await Promise.all([listPilas(), listSensores()])
+      setPilas(pilasData)
+      setSensores(sensoresData)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'No se pudieron cargar las pilas.')
     } finally {
@@ -64,19 +105,20 @@ export default function PilasPage() {
     }
   }
 
-  const handleDelete = async (id: string, nombre: string) => {
+  const handleInactivate = async (id: string, nombre: string) => {
     const ok = await dialog.confirm(
-      `¿Eliminar "${nombre}"? Esta acción no se puede deshacer.`,
-      'eliminar pila',
-      { destructive: true, confirmLabel: 'eliminar' },
+      `¿Inactivar "${nombre}"? La pila quedará en pausa.`,
+      'Inactivar pila',
+      { confirmLabel: 'Inactivar' },
     )
     if (!ok) return
     try {
-      await deletePila(id)
+      const pila = await getPila(id)
+      await updatePila(id, toRequest(pila, { estado: 'PAUSADA' }))
       await loadPilas()
     } catch (err) {
       await dialog.error(
-        err instanceof Error ? err.message : 'No se pudo eliminar la pila.',
+        err instanceof Error ? err.message : 'No se pudo inactivar la pila.',
       )
     }
   }
@@ -106,64 +148,84 @@ export default function PilasPage() {
 
       {error && <div className={styles.error}>{error}</div>}
 
+      {!loading && (
+        <div className={styles.toolbar}>
+          <ListSearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder="Buscar por nombre, ubicación, sensor o estado…"
+          />
+        </div>
+      )}
+
       <div className={styles.sheet}>
         <div className={styles.sheetInner}>
           {loading ? (
-            <div className={styles.loading}>cargando…</div>
+            <div className={styles.loading}>Cargando…</div>
           ) : pilas.length === 0 ? (
             <div className={styles.empty}>
               Todavía no hay pilas.
               <br />
               Tocá + para crear la primera.
             </div>
+          ) : pilasFiltradas.length === 0 ? (
+            <div className={styles.empty}>No hay pilas que coincidan con la búsqueda.</div>
           ) : (
             <>
               <div className={styles.listMeta}>
-                <span>registradas</span>
-                <span className={styles.count}>{pilas.length}</span>
+                <span>Registradas</span>
+                <span className={styles.count}>{pilasFiltradas.length}</span>
               </div>
               <div className={styles.list}>
-                {pilas.map((pila, index) => (
-                  <article key={pila.id} className={styles.card}>
-                    <span className={styles.code}>{formatCodigo(index)}</span>
-                    <Link to={`/pilas/${pila.id}`} className={styles.info}>
-                      <span className={styles.name}>{pila.nombre}</span>
-                      <span className={styles.meta}>
-                        {pila.ubicacion ?? 'sin ubicación'} · {formatDate(pila.fechaInicio)}
-                      </span>
-                    </Link>
-                    <span
-                      className={`${styles.status} ${pila.estado === 'PAUSADA' ? styles.statusPausa : ''} ${pila.estado === 'FINALIZADA' ? styles.statusFinal : ''}`}
-                    >
-                      {ESTADO_LABEL[pila.estado]}
-                    </span>
-                    <div className={styles.actions}>
-                      <Link
-                        to={`/pilas/${pila.id}`}
-                        className={styles.actionBtn}
-                        aria-label={`Ver detalle de ${pila.nombre}`}
-                      >
-                        <ChevronRight size={15} strokeWidth={1.5} />
+                {pilasFiltradas.map(({ pila, index }) => {
+                  const sensor = sensorPorPila.get(pila.id)
+                  const canInactivate = pila.estado === 'ACTIVA'
+                  return (
+                    <article key={pila.id} className={styles.card}>
+                      <span className={styles.code}>{formatCodigo(index)}</span>
+                      <Link to={`/pilas/${pila.id}`} className={styles.info}>
+                        <span className={styles.name}>{pila.nombre}</span>
+                        <span className={styles.meta}>
+                          {pila.ubicacion ?? 'Sin ubicación'}
+                          {' · '}
+                          {sensor ? `Sensor ${sensor.codigo}` : 'Sin sensor'}
+                        </span>
                       </Link>
-                      <button
-                        type="button"
-                        className={styles.actionBtn}
-                        onClick={() => handleEdit(pila.id)}
-                        aria-label={`Editar ${pila.nombre}`}
+                      <span
+                        className={`${styles.status} ${pila.estado === 'PAUSADA' ? styles.statusPausa : ''} ${pila.estado === 'FINALIZADA' ? styles.statusFinal : ''}`}
                       >
-                        <Pencil size={15} strokeWidth={1.5} />
-                      </button>
-                      <button
-                        type="button"
-                        className={`${styles.actionBtn} ${styles.actionBtnDanger}`}
-                        onClick={() => handleDelete(pila.id, pila.nombre)}
-                        aria-label={`Eliminar ${pila.nombre}`}
-                      >
-                        <Trash2 size={15} strokeWidth={1.5} />
-                      </button>
-                    </div>
-                  </article>
-                ))}
+                        {ESTADO_LABEL[pila.estado]}
+                      </span>
+                      <div className={styles.actions}>
+                        <Link
+                          to={`/pilas/${pila.id}`}
+                          className={styles.actionBtn}
+                          aria-label={`Ver detalle de ${pila.nombre}`}
+                        >
+                          <ChevronRight size={15} strokeWidth={1.5} />
+                        </Link>
+                        <button
+                          type="button"
+                          className={styles.actionBtn}
+                          onClick={() => handleEdit(pila.id)}
+                          aria-label={`Editar ${pila.nombre}`}
+                        >
+                          <Pencil size={15} strokeWidth={1.5} />
+                        </button>
+                        <button
+                          type="button"
+                          className={`${styles.actionBtn} ${styles.actionBtnDanger}`}
+                          onClick={() => handleInactivate(pila.id, pila.nombre)}
+                          aria-label={`Inactivar ${pila.nombre}`}
+                          disabled={!canInactivate}
+                          title={canInactivate ? 'Inactivar pila' : 'Solo pilas activas'}
+                        >
+                          <PauseCircle size={15} strokeWidth={1.5} />
+                        </button>
+                      </div>
+                    </article>
+                  )
+                })}
               </div>
             </>
           )}

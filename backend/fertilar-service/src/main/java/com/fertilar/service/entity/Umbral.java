@@ -43,6 +43,6 @@ public class Umbral {
     private LocalDateTime createdAt;
 
     public enum Parametro {
-        TEMPERATURA, HUMEDAD, PH, CONDUCTIVIDAD, NITROGENO, FOSFORO, POTASIO
+        TEMPERATURA, HUMEDAD, PH, CONDUCTIVIDAD, NITROGENO, FOSFORO, POTASIO, OXIGENO
     }
 }

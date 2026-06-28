@@ -18,6 +18,7 @@ const PARAMETROS: { value: UmbralParametro; label: string; unit: string }[] = [
   { value: 'NITROGENO', label: 'Nitrógeno', unit: '' },
   { value: 'FOSFORO', label: 'Fósforo', unit: '' },
   { value: 'POTASIO', label: 'Potasio', unit: '' },
+  { value: 'OXIGENO', label: 'Oxígeno', unit: '%' },
 ]
 
 const NIVELES: { value: UmbralNivel; label: string }[] = [

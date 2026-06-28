@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Pencil, Plus, Trash2 } from 'lucide-react'
+import ListSearchBar from '../components/ListSearchBar'
 import SensorModal from '../components/SensorModal'
 import { useDialog } from '../context/DialogContext'
 import { listPilas } from '../lib/pilas'
@@ -12,6 +13,7 @@ import {
 } from '../lib/sensores'
 import type { PilaResumen } from '../types/pila'
 import type { Sensor, SensorRequest, SensorResumen } from '../types/sensor'
+import { matchesSearch } from '../utils/searchText'
 import styles from './SensoresPage.module.css'
 
 const TIPO_LABEL: Record<string, string> = {
@@ -33,6 +35,7 @@ export default function SensoresPage() {
   const [error, setError] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
   const [editingSensor, setEditingSensor] = useState<Sensor | null>(null)
+  const [search, setSearch] = useState('')
 
   const pilaPorId = useMemo(
     () => new Map(pilas.map((p) => [p.id, p])),
@@ -43,6 +46,33 @@ export default function SensoresPage() {
     const ocupadas = new Set(sensores.map((s) => s.pilaId))
     return pilas.filter((p) => !ocupadas.has(p.id)).length
   }, [pilas, sensores])
+
+  const resumen = useMemo(() => {
+    const activos = sensores.filter((s) => s.activo).length
+    return {
+      total: sensores.length,
+      activos,
+      inactivos: sensores.length - activos,
+      pilasLibres: pilasSinSensor,
+    }
+  }, [sensores, pilasSinSensor])
+
+  const sensoresFiltrados = useMemo(
+    () =>
+      sensores.filter((sensor) => {
+        const pila = pilaPorId.get(sensor.pilaId)
+        return matchesSearch(
+          search,
+          sensor.codigo,
+          sensor.tipo,
+          formatTipo(sensor.tipo),
+          pila?.nombre,
+          pila?.ubicacion,
+          sensor.activo ? 'activo' : 'inactivo',
+        )
+      }),
+    [sensores, pilaPorId, search],
+  )
 
   const loadData = useCallback(async () => {
     setLoading(true)
@@ -127,6 +157,16 @@ export default function SensoresPage() {
 
       {error && <div className={styles.error}>{error}</div>}
 
+      {!loading && (
+        <div className={styles.toolbar}>
+          <ListSearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder="Buscar por código, tipo, pila o estado…"
+          />
+        </div>
+      )}
+
       <div className={styles.sheet}>
         <div className={styles.sheetInner}>
           {loading ? (
@@ -147,14 +187,30 @@ export default function SensoresPage() {
                 </>
               )}
             </div>
+          ) : sensoresFiltrados.length === 0 ? (
+            <div className={styles.empty}>No hay sensores que coincidan con la búsqueda.</div>
           ) : (
             <>
-              <div className={styles.listMeta}>
-                <span>registrados</span>
-                <span className={styles.count}>{sensores.length}</span>
+              <div className={styles.summary}>
+                <div className={styles.summaryItem}>
+                  <span className={styles.summaryValue}>{resumen.total}</span>
+                  <span className={styles.summaryLabel}>Registrados</span>
+                </div>
+                <div className={styles.summaryItem}>
+                  <span className={styles.summaryValue}>{resumen.activos}</span>
+                  <span className={styles.summaryLabel}>Activos</span>
+                </div>
+                <div className={styles.summaryItem}>
+                  <span className={styles.summaryValue}>{resumen.inactivos}</span>
+                  <span className={styles.summaryLabel}>Inactivos</span>
+                </div>
+                <div className={styles.summaryItem}>
+                  <span className={styles.summaryValue}>{resumen.pilasLibres}</span>
+                  <span className={styles.summaryLabel}>Pilas libres</span>
+                </div>
               </div>
               <div className={styles.list}>
-                {sensores.map((sensor) => {
+                {sensoresFiltrados.map((sensor) => {
                   const pila = pilaPorId.get(sensor.pilaId)
                   return (
                     <article key={sensor.id} className={styles.card}>
@@ -162,14 +218,14 @@ export default function SensoresPage() {
                       <div className={styles.info}>
                         <span className={styles.name}>{formatTipo(sensor.tipo)}</span>
                         <span className={styles.meta}>
-                          {pila?.nombre ?? 'pila desconocida'}
+                          Pila: {pila?.nombre ?? 'Sin pila'}
                           {pila?.ubicacion ? ` · ${pila.ubicacion}` : ''}
                         </span>
                       </div>
                       <span
                         className={`${styles.status} ${!sensor.activo ? styles.statusInactive : ''}`}
                       >
-                        {sensor.activo ? 'activo' : 'inactivo'}
+                        {sensor.activo ? 'Activo' : 'Inactivo'}
                       </span>
                       <div className={styles.actions}>
                         <button
@@ -197,13 +253,6 @@ export default function SensoresPage() {
           )}
         </div>
       </div>
-
-      {sensores.length > 0 && (
-        <p className={styles.note}>
-          {sensores.length} {sensores.length === 1 ? 'sensor' : 'sensores'}
-          {pilasSinSensor > 0 && ` · ${pilasSinSensor} ${pilasSinSensor === 1 ? 'pila libre' : 'pilas libres'}`}
-        </p>
-      )}
 
       <SensorModal
         open={modalOpen}

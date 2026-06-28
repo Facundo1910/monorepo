@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { ArrowLeft, ExternalLink, Trash2 } from 'lucide-react'
+import { ArrowLeft, Award, ExternalLink, Trash2 } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
-import CertificadoModal from '../components/CertificadoModal'
 import { useDialog } from '../context/DialogContext'
 import {
   deleteCertificado,
-  emitirCertificado,
   listCertificadosPorPila,
 } from '../lib/certificados'
 import { listLecturasPorPila } from '../lib/lecturas'
@@ -49,24 +47,20 @@ function isNearTarget(actual: number, target: number): boolean {
   return Math.abs(actual - target) <= tolerance
 }
 
-function canEmitirCertificado(rol: UsuarioRol | null): boolean {
+function canVerCertificacion(rol: UsuarioRol | null): boolean {
   return rol === 'ADMIN' || rol === 'ENCARGADO'
 }
 
 function motivoNoEmitir(
   estado: PilaEstado,
   rol: UsuarioRol | null,
-  tieneLecturas: boolean,
 ): string | null {
   if (estado !== 'FINALIZADA') return null
-  if (!canEmitirCertificado(rol)) {
+  if (!canVerCertificacion(rol)) {
     if (rol == null) {
       return 'No pudimos verificar tu rol. Recargá la página o pedile a un administrador que te asigne permisos.'
     }
     return 'Solo usuarios admin o encargado pueden emitir certificados.'
-  }
-  if (!tieneLecturas) {
-    return 'La pila no tiene lecturas registradas. Cargá al menos una lectura del sensor antes de emitir.'
   }
   return null
 }
@@ -90,7 +84,6 @@ export default function PilaDetailPage() {
   const [error, setError] = useState('')
   const [savingConfig, setSavingConfig] = useState(false)
   const [finalizando, setFinalizando] = useState(false)
-  const [certModalOpen, setCertModalOpen] = useState(false)
 
   const [diasEstimados, setDiasEstimados] = useState(DEFAULT_DIAS)
   const [humedadObjetivo, setHumedadObjetivo] = useState(String(DEFAULT_HUMEDAD))
@@ -226,37 +219,20 @@ export default function PilaDetailPage() {
       )
       setPila(updated)
 
-      const bloqueo = motivoNoEmitir(updated.estado, rol, ultimaLectura != null)
+      const bloqueo = motivoNoEmitir(updated.estado, rol)
       if (bloqueo) {
         await dialog.alert(`Pila finalizada.\n\n${bloqueo}`)
         return
       }
 
-      const emitir = await dialog.confirm(
-        'La pila quedó finalizada. ¿Querés emitir el certificado ahora?',
-        'emitir certificado',
-        { confirmLabel: 'emitir' },
+      await dialog.alert(
+        'Pila finalizada. Revisá la evaluación de fases para emitir el certificado cuando corresponda.',
       )
-      if (emitir) {
-        setCertModalOpen(true)
-      } else {
-        await dialog.alert(
-          'Pila finalizada. Podés emitir el certificado cuando quieras con el botón de abajo.',
-        )
-      }
     } catch (err) {
       await dialog.error(err instanceof Error ? err.message : 'No se pudo finalizar.')
     } finally {
       setFinalizando(false)
     }
-  }
-
-  const handleEmitirCertificado = async (observaciones?: string) => {
-    if (!id) return
-    await emitirCertificado(id, observaciones ? { observaciones } : {})
-    const certs = await listCertificadosPorPila(id)
-    setCertificados(certs)
-    await dialog.alert('Certificado emitido.')
   }
 
   const handleDeleteCertificado = async (cert: Certificado) => {
@@ -290,11 +266,8 @@ export default function PilaDetailPage() {
     )
   }
 
-  const puedeEmitir =
-    pila.estado === 'FINALIZADA' &&
-    canEmitirCertificado(rol) &&
-    ultimaLectura != null
-  const avisoEmitir = motivoNoEmitir(pila.estado, rol, ultimaLectura != null)
+  const avisoEmitir = motivoNoEmitir(pila.estado, rol)
+  const mostrarCertificacion = canVerCertificacion(rol)
 
   return (
     <div className={styles.page}>
@@ -428,14 +401,11 @@ export default function PilaDetailPage() {
         {pila.estado === 'FINALIZADA' && avisoEmitir && (
           <p className={styles.emitNotice}>{avisoEmitir}</p>
         )}
-        {puedeEmitir && (
-          <button
-            type="button"
-            className={styles.primaryBtn}
-            onClick={() => setCertModalOpen(true)}
-          >
-            emitir certificado
-          </button>
+        {mostrarCertificacion && (
+          <Link to={`/certificados?pila=${id}`} className={styles.primaryBtn}>
+            <Award size={16} strokeWidth={1.5} />
+            evaluar en certificados
+          </Link>
         )}
       </div>
 
@@ -472,7 +442,7 @@ export default function PilaDetailPage() {
                           <ExternalLink size={14} strokeWidth={1.5} />
                           ver
                         </a>
-                        {canEmitirCertificado(rol) && (
+                        {canVerCertificacion(rol) && (
                           <button
                             type="button"
                             className={`${styles.tableBtn} ${styles.tableBtnDanger}`}
@@ -492,13 +462,6 @@ export default function PilaDetailPage() {
           </div>
         )}
       </section>
-
-      <CertificadoModal
-        open={certModalOpen}
-        pilaNombre={pila.nombre}
-        onClose={() => setCertModalOpen(false)}
-        onConfirm={handleEmitirCertificado}
-      />
     </div>
   )
 }

@@ -154,9 +154,13 @@
 }
 
 .primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   background: var(--sage-deep);
   color: var(--paper);
   font-weight: 500;
+  text-decoration: none;
 }
 
 .primaryBtn:hover:not(:disabled) {

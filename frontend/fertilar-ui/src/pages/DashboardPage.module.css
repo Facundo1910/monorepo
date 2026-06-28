@@ -31,6 +31,10 @@
   max-width: 520px;
 }
 
+.toolbar {
+  composes: toolbar from '../styles/listPageShared.module.css';
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 480px), 1fr));

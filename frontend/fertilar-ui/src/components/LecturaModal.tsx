@@ -20,6 +20,7 @@ type FormState = {
   potasio: string
   ph: string
   conductividad: string
+  oxigeno: string
 }
 
 const emptyForm = (sensorId = ''): FormState => ({
@@ -31,6 +32,7 @@ const emptyForm = (sensorId = ''): FormState => ({
   potasio: '',
   ph: '',
   conductividad: '',
+  oxigeno: '',
 })
 
 function parseApiError(err: unknown): string {
@@ -84,6 +86,7 @@ export default function LecturaModal({
       form.potasio,
       form.ph,
       form.conductividad,
+      form.oxigeno,
     ].some((v) => v.trim() !== '')
 
     if (!hasValue) {
@@ -103,6 +106,7 @@ export default function LecturaModal({
         potasio: toOptionalNumber(form.potasio),
         ph: toOptionalNumber(form.ph),
         conductividad: toOptionalNumber(form.conductividad),
+        oxigeno: toOptionalNumber(form.oxigeno),
       }
       await onSave(payload)
       onClose()
@@ -226,16 +230,29 @@ export default function LecturaModal({
             </div>
           </div>
 
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="lectura-cond">conductividad</label>
-            <input
-              id="lectura-cond"
-              type="number"
-              step="0.01"
-              className={styles.input}
-              value={form.conductividad}
-              onChange={(e) => setForm({ ...form, conductividad: e.target.value })}
-            />
+          <div className={styles.row}>
+            <div className={styles.field}>
+              <label className={styles.label} htmlFor="lectura-cond">conductividad</label>
+              <input
+                id="lectura-cond"
+                type="number"
+                step="0.01"
+                className={styles.input}
+                value={form.conductividad}
+                onChange={(e) => setForm({ ...form, conductividad: e.target.value })}
+              />
+            </div>
+            <div className={styles.field}>
+              <label className={styles.label} htmlFor="lectura-o2">oxígeno (%)</label>
+              <input
+                id="lectura-o2"
+                type="number"
+                step="0.01"
+                className={styles.input}
+                value={form.oxigeno}
+                onChange={(e) => setForm({ ...form, oxigeno: e.target.value })}
+              />
+            </div>
           </div>
             </div>
           </div>

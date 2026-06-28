@@ -1,11 +1,19 @@
 .page {
-  composes: page from '../styles/listPageShared.module.css';
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  padding: 0 1.25rem 2rem;
+  max-width: min(1120px, calc(100% - 1.5rem));
+  margin: 0 auto;
+  width: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .top {
   margin-bottom: 1rem;
   padding-top: 0.25rem;
-  flex-shrink: 0;
 }
 
 .heading {
@@ -21,27 +29,89 @@
   color: var(--ink-muted);
   margin-top: 0.45rem;
   line-height: 1.55;
-  max-width: 520px;
+  max-width: 560px;
 }
 
-.sheet {
-  composes: sheet from '../styles/listPageShared.module.css';
+.section {
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.35rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(42, 41, 38, 0.06);
 }
 
-.sheetInner {
-  composes: sheetInner from '../styles/listPageShared.module.css';
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
-.listMeta {
-  composes: listMeta from '../styles/listPageShared.module.css';
+.sectionTitle {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.01em;
 }
 
-.count {
-  composes: count from '../styles/listPageShared.module.css';
+.sectionEmpty {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+}
+
+.pilaSelectWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: min(280px, 100%);
+}
+
+.pilaSelectLabel {
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+}
+
+.pilaSelect {
+  padding: 0.65rem 0.85rem;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  color: var(--ink);
+  background: var(--cream);
+  font-family: inherit;
+}
+
+.pilaSelect:focus {
+  outline: none;
+  background: var(--cream-deep);
+}
+
+.countBadge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--sage-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+
+.searchWrap {
+  margin-bottom: 1rem;
 }
 
 .tableWrap {
   overflow-x: auto;
+  background: var(--cream);
+  border-radius: var(--radius-md);
+  padding: 0.25rem 0.5rem;
 }
 
 .table {
@@ -55,13 +125,13 @@
   font-weight: 500;
   color: var(--ink-muted);
   font-size: 0.72rem;
-  padding: 0.5rem 0.65rem 0.65rem;
+  padding: 0.65rem 0.75rem;
   border-bottom: 1px solid var(--line);
   white-space: nowrap;
 }
 
 .table td {
-  padding: 0.85rem 0.65rem;
+  padding: 0.85rem 0.75rem;
   color: var(--ink);
   border-bottom: 1px solid var(--line);
   vertical-align: middle;
@@ -109,12 +179,13 @@
   border-color: rgba(139, 69, 69, 0.25);
 }
 
-.empty {
-  composes: empty from '../styles/listPageShared.module.css';
-}
-
+.empty,
 .loading {
-  composes: loading from '../styles/listPageShared.module.css';
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--ink-muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
 }
 
 .error {
@@ -124,13 +195,12 @@
   border-radius: var(--radius-md);
   color: #8b4545;
   font-size: 0.85rem;
-  flex-shrink: 0;
   border: 1px solid rgba(139, 69, 69, 0.15);
 }
 
 @media (max-width: 640px) {
   .page {
-    padding: 0 1rem 1rem;
+    padding: 0 1rem 1.5rem;
   }
 
   .heading {

@@ -85,6 +85,7 @@ public class AlertaEvaluacionServiceImpl implements AlertaEvaluacionService {
             case NITROGENO -> lectura.getNitrogeno();
             case FOSFORO -> lectura.getFosforo();
             case POTASIO -> lectura.getPotasio();
+            case OXIGENO -> lectura.getOxigeno();
         };
     }
 
@@ -97,6 +98,7 @@ public class AlertaEvaluacionServiceImpl implements AlertaEvaluacionService {
             case NITROGENO -> "Nitrógeno";
             case FOSFORO -> "Fósforo";
             case POTASIO -> "Potasio";
+            case OXIGENO -> "Oxígeno";
         };
     }
 
@@ -104,6 +106,7 @@ public class AlertaEvaluacionServiceImpl implements AlertaEvaluacionService {
         return switch (parametro) {
             case TEMPERATURA -> "°C";
             case HUMEDAD -> "%";
+            case OXIGENO -> "%";
             default -> "";
         };
     }

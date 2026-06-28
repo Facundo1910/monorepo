@@ -61,6 +61,10 @@
   composes: listMeta from '../styles/listPageShared.module.css';
 }
 
+.toolbar {
+  composes: toolbar from '../styles/listPageShared.module.css';
+}
+
 .count {
   composes: count from '../styles/listPageShared.module.css';
 }
@@ -137,12 +141,17 @@
   text-decoration: none;
 }
 
-.actionBtn:hover {
+.actionBtn:hover:not(:disabled) {
   background: var(--cream-deep);
   transform: scale(1.05);
 }
 
-.actionBtnDanger:hover {
+.actionBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.actionBtnDanger:hover:not(:disabled) {
   color: #8b4545;
 }
 

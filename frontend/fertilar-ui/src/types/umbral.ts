@@ -6,6 +6,7 @@ export type UmbralParametro =
   | 'NITROGENO'
   | 'FOSFORO'
   | 'POTASIO'
+  | 'OXIGENO'
 
 export type UmbralNivel = 'INFO' | 'ADVERTENCIA' | 'CRITICA'
 

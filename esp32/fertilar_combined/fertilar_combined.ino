@@ -35,6 +35,7 @@ Arduino_GFX *gfx = new Arduino_ST7789(
 #define COL_N      0xFFE0
 #define COL_P      0x051F
 #define COL_K      0xF800
+#define COL_O2     0x039F
 #define COL_STATUS 0x8410
 #define COL_OK     0x07E0
 #define COL_ERR    0xF800
@@ -47,11 +48,11 @@ const char *etiquetas[8] = {
     "HUMEDAD", "TEMPERATURA",
     "COND. (EC)", "pH",
     "NITROGENO (N)", "FOSFORO (P)",
-    "POTASIO (K)", "ESTADO"};
+    "OXIGENO (O2)", "ESTADO"};
 
 const uint16_t colores[8] = {
     COL_HUM, COL_TEMP, COL_EC, COL_PH,
-    COL_N, COL_P, COL_K, COL_STATUS};
+    COL_N, COL_P, COL_O2, COL_STATUS};
 // ──────────────────────────────────────────────────────────────────────────
 
 // ─── DATOS DEL SENSOR ─────────────────────────────────────────────────────
@@ -63,6 +64,8 @@ struct LecturaSensor {
   uint16_t nitrogeno;
   uint16_t fosforo;
   uint16_t potasio;
+  float    oxigeno;
+
 };
 
 LecturaSensor lecturaActual = {};
@@ -171,7 +174,7 @@ void dibujarLectura(const LecturaSensor &d, const char *estado, uint16_t colorEs
   snprintf(buf, sizeof(buf), "%.1f", d.ph);              dibujarValor(3, buf);
   snprintf(buf, sizeof(buf), "%u mg/kg", d.nitrogeno);   dibujarValor(4, buf);
   snprintf(buf, sizeof(buf), "%u mg/kg", d.fosforo);     dibujarValor(5, buf);
-  snprintf(buf, sizeof(buf), "%u mg/kg", d.potasio);     dibujarValor(6, buf);
+  snprintf(buf, sizeof(buf), "%.1f %%", d.oxigeno);      dibujarValor(6, buf);
 
   // celda de estado con color dinamico
   int x = 1 * CELL_W;
@@ -197,6 +200,7 @@ void generarDatosRandom(LecturaSensor &out) {
   out.nitrogeno    = random(10, 100);
   out.fosforo      = random(5, 60);
   out.potasio      = random(50, 300);
+  out.oxigeno      = randFloat(5.0, 20.0);
 }
 // ──────────────────────────────────────────────────────────────────────────
 
@@ -260,8 +264,13 @@ bool enviarLectura(const LecturaSensor &d) {
   body["nitrogeno"]     = d.nitrogeno;
   body["fosforo"]       = d.fosforo;
   body["potasio"]       = d.potasio;
+  body["oxigeno"]       = d.oxigeno;
   String bodyStr;
   serializeJson(body, bodyStr);
+
+  Serial.printf("Payload: temp=%.1f hum=%.1f ph=%.1f O2=%.1f%% N=%u P=%u K=%u EC=%u\n",
+                d.temperatura, d.humedad, d.ph, d.oxigeno,
+                d.nitrogeno, d.fosforo, d.potasio, d.ec);
 
   int code = http.POST(bodyStr);
   if (code == 201) {

@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { CheckCircle2 } from 'lucide-react'
 import AlertaModal from '../components/AlertaModal'
+import ListSearchBar from '../components/ListSearchBar'
 import { useDialog } from '../context/DialogContext'
 import { listAlertas, resolverAlerta } from '../lib/alertas'
 import { listPilas } from '../lib/pilas'
 import type { Alerta } from '../types/alerta'
 import type { PilaResumen } from '../types/pila'
+import { matchesSearch } from '../utils/searchText'
 import styles from './AlertasPage.module.css'
 
 type Filtro = 'activas' | 'resueltas' | 'todas'
@@ -40,6 +42,7 @@ export default function AlertasPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [selectedAlerta, setSelectedAlerta] = useState<Alerta | null>(null)
+  const [search, setSearch] = useState('')
 
   const pilaPorId = useMemo(
     () => new Map(pilas.map((p) => [p.id, p])),
@@ -75,6 +78,24 @@ export default function AlertasPage() {
   const pendientes = useMemo(
     () => alertas.filter((a) => !a.resuelta).length,
     [alertas],
+  )
+
+  const alertasFiltradas = useMemo(
+    () =>
+      alertas.filter((alerta) => {
+        const pila = pilaPorId.get(alerta.pilaId)
+        return matchesSearch(
+          search,
+          alerta.tipo,
+          alerta.mensaje,
+          pila?.nombre,
+          NIVEL_LABEL[alerta.nivel],
+          alerta.nivel,
+          alerta.resuelta ? 'resuelta' : 'pendiente',
+          formatDateTime(alerta.createdAt),
+        )
+      }),
+    [alertas, pilaPorId, search],
   )
 
   const handleResolve = async (id: string, tipo: string) => {
@@ -120,11 +141,21 @@ export default function AlertasPage() {
             key={f}
             type="button"
             className={`${styles.filterBtn} ${filtro === f ? styles.filterBtnActive : ''}`}
-            onClick={() => setFiltro(f)}
+            onClick={() => {
+              setFiltro(f)
+              setSearch('')
+            }}
           >
             {f}
           </button>
         ))}
+        {!loading && (
+          <ListSearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder="Buscar por tipo, mensaje o pila…"
+          />
+        )}
       </div>
 
       {error && <div className={styles.error}>{error}</div>}
@@ -135,14 +166,16 @@ export default function AlertasPage() {
             <div className={styles.loading}>cargando…</div>
           ) : alertas.length === 0 ? (
             <div className={styles.empty}>{emptyMessage}</div>
+          ) : alertasFiltradas.length === 0 ? (
+            <div className={styles.empty}>No hay alertas que coincidan con la búsqueda.</div>
           ) : (
             <>
               <div className={styles.listMeta}>
                 <span>{filtro === 'activas' ? 'pendientes' : filtro === 'resueltas' ? 'resueltas' : 'total'}</span>
-                <span className={styles.count}>{alertas.length}</span>
+                <span className={styles.count}>{alertasFiltradas.length}</span>
               </div>
               <div className={styles.list}>
-                {alertas.map((alerta) => {
+                {alertasFiltradas.map((alerta) => {
                   const pila = pilaPorId.get(alerta.pilaId)
                   return (
                     <article key={alerta.id} className={styles.row}>

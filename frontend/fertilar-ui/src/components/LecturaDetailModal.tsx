@@ -42,6 +42,7 @@ export default function LecturaDetailModal({
     { label: 'fósforo', value: formatValue(lectura.fosforo) },
     { label: 'potasio', value: formatValue(lectura.potasio) },
     { label: 'pH', value: formatValue(lectura.ph) },
+    { label: 'oxígeno', value: formatValue(lectura.oxigeno, ' %') },
     { label: 'conductividad', value: formatValue(lectura.conductividad) },
   ]
 

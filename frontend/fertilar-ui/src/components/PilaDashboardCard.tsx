@@ -24,6 +24,7 @@ const METRIC_RANGES = {
   temperatura: { min: 45, max: 65, unit: '°C' },
   humedad: { min: 45, max: 60, unit: '%' },
   ph: { min: 5.8, max: 7.2, unit: '' },
+  oxigeno: { min: 5, max: 20, unit: '%' },
 } as const
 
 type ChartView = 'ambiente' | 'npk'
@@ -37,6 +38,7 @@ type AmbientePoint = BasePoint & {
   temperatura: number | null
   humedad: number | null
   ph: number | null
+  oxigeno: number | null
 }
 
 type NpkPoint = BasePoint & {
@@ -146,6 +148,7 @@ function buildAmbienteData(lecturas: Lectura[]): AmbientePoint[] {
     temperatura: toNumber(l.temperatura),
     humedad: toNumber(l.humedad),
     ph: toNumber(l.ph),
+    oxigeno: toNumber(l.oxigeno),
   }))
 }
 
@@ -269,6 +272,7 @@ export default function PilaDashboardCard({
   const ultimaTemp = toNumber(ultimaLectura?.temperatura)
   const ultimaHum = toNumber(ultimaLectura?.humedad)
   const ultimaPh = toNumber(ultimaLectura?.ph)
+  const ultimaO2 = toNumber(ultimaLectura?.oxigeno)
   const ultimaN = toNumber(ultimaLectura?.nitrogeno)
   const ultimaP = toNumber(ultimaLectura?.fosforo)
   const ultimaK = toNumber(ultimaLectura?.potasio)
@@ -289,8 +293,8 @@ export default function PilaDashboardCard({
 
   const pendientes = alertasPendientes.length
 
-  const ambienteLabels = { temperatura: 'Temp.', humedad: 'Hum.', ph: 'pH' }
-  const ambienteUnits = { temperatura: '°C', humedad: '%', ph: '' }
+  const ambienteLabels = { temperatura: 'Temp.', humedad: 'Hum.', ph: 'pH', oxigeno: 'O₂' }
+  const ambienteUnits = { temperatura: '°C', humedad: '%', ph: '', oxigeno: '%' }
   const npkLabels = {
     nitrogeno: 'N',
     fosforo: 'P',
@@ -365,6 +369,7 @@ export default function PilaDashboardCard({
                 domain={[0, 100]}
               />
               <YAxis yAxisId="ph" domain={[5, 8]} hide />
+              <YAxis yAxisId="o2" domain={[0, 25]} hide />
               <Tooltip
                 content={
                   <ChartTooltip labels={ambienteLabels} units={ambienteUnits} />
@@ -377,7 +382,9 @@ export default function PilaDashboardCard({
                     ? 'Temperatura'
                     : value === 'humedad'
                       ? 'Humedad'
-                      : 'pH'
+                      : value === 'oxigeno'
+                        ? 'Oxígeno'
+                        : 'pH'
                 }
               />
               <Line
@@ -407,6 +414,17 @@ export default function PilaDashboardCard({
                 name="ph"
                 stroke="#27ae60"
                 strokeWidth={2}
+                dot={false}
+                connectNulls
+              />
+              <Line
+                yAxisId="o2"
+                type="monotone"
+                dataKey="oxigeno"
+                name="oxigeno"
+                stroke="#8e44ad"
+                strokeWidth={2}
+                strokeDasharray="3 3"
                 dot={false}
                 connectNulls
               />
@@ -532,6 +550,16 @@ export default function PilaDashboardCard({
           >
             <span className={styles.indicatorDot} />
             pH: {formatMetricValue(ultimaPh, METRIC_RANGES.ph.unit)}
+          </span>
+          <span
+            className={`${styles.indicator} ${
+              inRange(ultimaO2, METRIC_RANGES.oxigeno.min, METRIC_RANGES.oxigeno.max)
+                ? styles.indicatorOk
+                : styles.indicatorBad
+            }`}
+          >
+            <span className={styles.indicatorDot} />
+            O₂: {formatMetricValue(ultimaO2, METRIC_RANGES.oxigeno.unit)}
           </span>
         </div>
       ) : (

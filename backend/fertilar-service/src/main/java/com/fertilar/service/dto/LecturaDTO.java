@@ -21,6 +21,7 @@ public class LecturaDTO {
     private BigDecimal potasio;
     private BigDecimal ph;
     private BigDecimal conductividad;
+    private BigDecimal oxigeno;
     private LocalDateTime timestamp;
 
     public static LecturaDTO from(Lectura lectura) {
@@ -34,6 +35,7 @@ public class LecturaDTO {
                 .potasio(lectura.getPotasio())
                 .ph(lectura.getPh())
                 .conductividad(lectura.getConductividad())
+                .oxigeno(lectura.getOxigeno())
                 .timestamp(lectura.getTimestamp())
                 .build();
     }
