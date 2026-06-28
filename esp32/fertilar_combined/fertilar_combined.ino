@@ -10,7 +10,33 @@
 #define AUTH_USERNAME      "facubas39@gmail.com"
 #define AUTH_PASSWORD      "Facundo1905?"
 #define SENSOR_ID          "888204da-90a7-4270-b94b-d4534894129a"
-#define INTERVALO_ENVIO_MS 60000   // cada 1 minuto envia al backend
+#define INTERVALO_ENVIO_MS    60000  // envio al backend
+#define INTERVALO_LECTURA_MS  5000   // lectura de sensores RS485
+
+// ─── RS485 / MAX485 (bus compartido) ────────────────────────────────────
+// Cableado: RO->GPIO9, DI->GPIO10, DE+RE->GPIO11, A->Verde, B->Blanco
+#define RS485_RX         9
+#define RS485_TX         10
+#define RS485_DE_RE      11
+#define RS485_BAUD       9600
+#define RS485_TIMEOUT_MS 800
+
+// Sensor suelo 7-en-1 (NPK + humedad + temp + EC + pH) — Renke / JXCT
+#define HAY_SENSOR_NPK   0       // 1 cuando conectes el sensor suelo 7-en-1
+#define NPK_SLAVE_ADDR   0x01
+#define NPK_REG_START    0x0000
+#define NPK_REG_COUNT    7
+
+// Sensor oxigeno disuelto
+#define HAY_SENSOR_O2    1       // 0 si no esta conectado
+#define O2_SLAVE_ADDR    0x01    // usar 0x02 si NPK y O2 comparten bus
+#define O2_REG           0x0002
+#define O2_SCALE         0.01f
+#define O2_FUNC          0x03
+
+HardwareSerial RS485Serial(2);
+bool npkSensorOk = false;
+bool o2SensorOk = false;
 // ──────────────────────────────────────────────────────────────────────────
 
 // ─── LCD ──────────────────────────────────────────────────────────────────
@@ -73,6 +99,7 @@ LecturaSensor lecturaActual = {};
 
 String accessToken = "";
 unsigned long ultimoEnvio = 0;
+unsigned long ultimaLectura = 0;
 
 // ─── LCD: inicializacion ──────────────────────────────────────────────────
 void lcd_reg_init() {
@@ -165,18 +192,45 @@ void dibujarEstructura() {
   }
 }
 
+void dibujarOxigeno(const LecturaSensor &d) {
+  char buf[24];
+  if (o2SensorOk) {
+    snprintf(buf, sizeof(buf), "%.1f %%", d.oxigeno);
+  } else {
+    snprintf(buf, sizeof(buf), "SIN O2");
+  }
+  dibujarValor(6, buf);
+}
+
 void dibujarLectura(const LecturaSensor &d, const char *estado, uint16_t colorEstado) {
   char buf[24];
 
-  snprintf(buf, sizeof(buf), "%.1f %%", d.humedad);      dibujarValor(0, buf);
-  snprintf(buf, sizeof(buf), "%.1f C", d.temperatura);   dibujarValor(1, buf);
-  snprintf(buf, sizeof(buf), "%u uS/cm", d.ec);          dibujarValor(2, buf);
-  snprintf(buf, sizeof(buf), "%.1f", d.ph);              dibujarValor(3, buf);
-  snprintf(buf, sizeof(buf), "%u mg/kg", d.nitrogeno);   dibujarValor(4, buf);
-  snprintf(buf, sizeof(buf), "%u mg/kg", d.fosforo);     dibujarValor(5, buf);
-  snprintf(buf, sizeof(buf), "%.1f %%", d.oxigeno);      dibujarValor(6, buf);
+  if (npkSensorOk) snprintf(buf, sizeof(buf), "%.1f %%", d.humedad);
+  else strcpy(buf, "SIN DATO");
+  dibujarValor(0, buf);
 
-  // celda de estado con color dinamico
+  if (npkSensorOk) snprintf(buf, sizeof(buf), "%.1f C", d.temperatura);
+  else strcpy(buf, "SIN DATO");
+  dibujarValor(1, buf);
+
+  if (npkSensorOk) snprintf(buf, sizeof(buf), "%u uS/cm", d.ec);
+  else strcpy(buf, "SIN DATO");
+  dibujarValor(2, buf);
+
+  if (npkSensorOk) snprintf(buf, sizeof(buf), "%.1f", d.ph);
+  else strcpy(buf, "SIN DATO");
+  dibujarValor(3, buf);
+
+  if (npkSensorOk) snprintf(buf, sizeof(buf), "%u mg/kg", d.nitrogeno);
+  else strcpy(buf, "SIN DATO");
+  dibujarValor(4, buf);
+
+  if (npkSensorOk) snprintf(buf, sizeof(buf), "%u mg/kg", d.fosforo);
+  else strcpy(buf, "SIN DATO");
+  dibujarValor(5, buf);
+
+  dibujarOxigeno(d);
+
   int x = 1 * CELL_W;
   int y = GRID_TOP + 3 * CELL_H;
   gfx->fillRect(x + 6, y + 16, CELL_W - 10, 22, COL_BG);
@@ -187,20 +241,139 @@ void dibujarLectura(const LecturaSensor &d, const char *estado, uint16_t colorEs
 }
 // ──────────────────────────────────────────────────────────────────────────
 
-// ─── DATOS RANDOM ─────────────────────────────────────────────────────────
-float randFloat(float minV, float maxV) {
-  return minV + (float)random(0, 1000) / 1000.0f * (maxV - minV);
+// ─── RS485 / MODBUS ───────────────────────────────────────────────────────
+uint16_t modbusCRC16(const uint8_t *data, uint16_t len) {
+  uint16_t crc = 0xFFFF;
+  for (uint16_t i = 0; i < len; i++) {
+    crc ^= data[i];
+    for (uint8_t j = 0; j < 8; j++) {
+      crc = (crc & 1) ? (crc >> 1) ^ 0xA001 : (crc >> 1);
+    }
+  }
+  return crc;
 }
 
-void generarDatosRandom(LecturaSensor &out) {
-  out.humedad      = randFloat(20.0, 80.0);
-  out.temperatura  = randFloat(15.0, 35.0);
-  out.ec           = random(100, 800);
-  out.ph           = randFloat(5.5, 7.5);
-  out.nitrogeno    = random(10, 100);
-  out.fosforo      = random(5, 60);
-  out.potasio      = random(50, 300);
-  out.oxigeno      = randFloat(5.0, 20.0);
+void rs485Enviar(const uint8_t *data, size_t len) {
+  digitalWrite(RS485_DE_RE, HIGH);
+  delay(2);
+  RS485Serial.write(data, len);
+  RS485Serial.flush();
+  delay(2);
+  digitalWrite(RS485_DE_RE, LOW);
+}
+
+bool leerRegistrosModbus(uint8_t slaveAddr, uint8_t func, uint16_t regStart,
+                         uint16_t count, uint16_t *valoresOut) {
+  uint8_t req[8];
+  req[0] = slaveAddr;
+  req[1] = func;
+  req[2] = (regStart >> 8) & 0xFF;
+  req[3] = regStart & 0xFF;
+  req[4] = (count >> 8) & 0xFF;
+  req[5] = count & 0xFF;
+  uint16_t crc = modbusCRC16(req, 6);
+  req[6] = crc & 0xFF;
+  req[7] = (crc >> 8) & 0xFF;
+
+  while (RS485Serial.available()) RS485Serial.read();
+
+  rs485Enviar(req, sizeof(req));
+
+  const size_t expectedBytes = 3 + count * 2 + 2;
+  uint8_t resp[32];
+  size_t idx = 0;
+  unsigned long inicio = millis();
+  while (millis() - inicio < RS485_TIMEOUT_MS) {
+    while (RS485Serial.available() && idx < sizeof(resp)) {
+      resp[idx++] = RS485Serial.read();
+    }
+    if (idx >= expectedBytes) break;
+    delay(1);
+  }
+
+  if (idx < expectedBytes) {
+    Serial.printf("Modbus 0x%02X: timeout (reg 0x%04X)\n", slaveAddr, regStart);
+    return false;
+  }
+
+  Serial.printf("Modbus 0x%02X: ", slaveAddr);
+  for (size_t i = 0; i < idx; i++) Serial.printf("%02X ", resp[i]);
+  Serial.println();
+
+  if (resp[0] != slaveAddr || resp[1] != func || resp[2] != count * 2) {
+    Serial.printf("Modbus 0x%02X: respuesta invalida\n", slaveAddr);
+    return false;
+  }
+
+  uint16_t crcCalc = modbusCRC16(resp, 3 + count * 2);
+  uint16_t crcRecv = resp[3 + count * 2] | (resp[4 + count * 2] << 8);
+  if (crcCalc != crcRecv) {
+    Serial.printf("Modbus 0x%02X: error CRC\n", slaveAddr);
+    return false;
+  }
+
+  for (uint16_t i = 0; i < count; i++) {
+    valoresOut[i] = ((uint16_t)resp[3 + i * 2] << 8) | resp[4 + i * 2];
+  }
+  return true;
+}
+
+bool leerSensorNPK(LecturaSensor &out) {
+  uint16_t regs[NPK_REG_COUNT] = {};
+  if (!leerRegistrosModbus(NPK_SLAVE_ADDR, 0x03, NPK_REG_START, NPK_REG_COUNT, regs)) {
+    return false;
+  }
+
+  out.humedad     = regs[0] / 10.0f;
+  out.temperatura = regs[1] / 10.0f;
+  out.ec          = regs[2];
+  out.ph          = regs[3] / 100.0f;
+  out.nitrogeno   = regs[4];
+  out.fosforo     = regs[5];
+  out.potasio     = regs[6];
+
+  Serial.printf("NPK: hum=%.1f%% temp=%.1fC EC=%u pH=%.2f N=%u P=%u K=%u\n",
+                out.humedad, out.temperatura, out.ec, out.ph,
+                out.nitrogeno, out.fosforo, out.potasio);
+  return true;
+}
+
+bool leerOxigenoRS485(float *oxigenoOut) {
+  uint16_t raw = 0;
+  if (!leerRegistrosModbus(O2_SLAVE_ADDR, O2_FUNC, O2_REG, 1, &raw)) {
+    return false;
+  }
+
+  *oxigenoOut = raw * O2_SCALE;
+  Serial.printf("O2: reg=0x%04X raw=%u -> %.2f\n", O2_REG, raw, *oxigenoOut);
+  return true;
+}
+
+void initRS485() {
+  pinMode(RS485_DE_RE, OUTPUT);
+  digitalWrite(RS485_DE_RE, LOW);
+  RS485Serial.begin(RS485_BAUD, SERIAL_8N1, RS485_RX, RS485_TX);
+  delay(100);
+  Serial.printf("RS485 init: RX=%d TX=%d DE=%d baud=%d\n",
+                RS485_RX, RS485_TX, RS485_DE_RE, RS485_BAUD);
+}
+
+void leerSensores() {
+#if HAY_SENSOR_NPK
+  npkSensorOk = leerSensorNPK(lecturaActual);
+#else
+  npkSensorOk = false;
+#endif
+
+#if HAY_SENSOR_O2
+  float o2 = 0.0f;
+  o2SensorOk = leerOxigenoRS485(&o2);
+  if (o2SensorOk) {
+    lecturaActual.oxigeno = o2;
+  }
+#else
+  o2SensorOk = false;
+#endif
 }
 // ──────────────────────────────────────────────────────────────────────────
 
@@ -249,6 +422,16 @@ bool login() {
 }
 
 bool enviarLectura(const LecturaSensor &d) {
+#if HAY_SENSOR_NPK
+  if (!npkSensorOk) {
+    Serial.println("No se envia: sin lectura valida del sensor NPK");
+    return false;
+  }
+#else
+  Serial.println("No se envia: sensor NPK desactivado (HAY_SENSOR_NPK=0)");
+  return false;
+#endif
+
   Serial.println("Enviando lectura...");
   HTTPClient http;
   http.begin(String(API_BASE_URL) + "/lecturas");
@@ -256,7 +439,7 @@ bool enviarLectura(const LecturaSensor &d) {
   http.addHeader("Authorization", "Bearer " + accessToken);
 
   StaticJsonDocument<512> body;
-  body["sensorId"]      = SENSOR_ID;
+  body["sensorId"] = SENSOR_ID;
   body["temperatura"]   = d.temperatura;
   body["humedad"]       = d.humedad;
   body["ph"]            = d.ph;
@@ -264,12 +447,12 @@ bool enviarLectura(const LecturaSensor &d) {
   body["nitrogeno"]     = d.nitrogeno;
   body["fosforo"]       = d.fosforo;
   body["potasio"]       = d.potasio;
-  body["oxigeno"]       = d.oxigeno;
   String bodyStr;
   serializeJson(body, bodyStr);
 
-  Serial.printf("Payload: temp=%.1f hum=%.1f ph=%.1f O2=%.1f%% N=%u P=%u K=%u EC=%u\n",
-                d.temperatura, d.humedad, d.ph, d.oxigeno,
+  Serial.printf("Payload NPK=%s temp=%.1f hum=%.1f ph=%.1f N=%u P=%u K=%u EC=%u\n",
+                npkSensorOk ? "OK" : "N/A",
+                d.temperatura, d.humedad, d.ph,
                 d.nitrogeno, d.fosforo, d.potasio, d.ec);
 
   int code = http.POST(bodyStr);
@@ -304,11 +487,11 @@ void setup() {
   gfx->setRotation(1);
   dibujarEstructura();
 
-  // Generar primera lectura y mostrarla
-  generarDatosRandom(lecturaActual);
-  dibujarLectura(lecturaActual, "SIN WIFI", COL_ERR);
+  initRS485();
 
-  // WiFi + login
+  leerSensores();
+  dibujarLectura(lecturaActual, "SIN WIFI", COL_ERR);
+  ultimaLectura = millis();
   if (conectarWiFi()) {
     dibujarLectura(lecturaActual, "WIFI OK", COL_OK);
     login();
@@ -320,11 +503,17 @@ void setup() {
 void loop() {
   unsigned long ahora = millis();
 
-  // Cada INTERVALO_ENVIO_MS generar nuevos datos y enviar
+  if (ahora - ultimaLectura >= INTERVALO_LECTURA_MS) {
+    ultimaLectura = ahora;
+    leerSensores();
+    const char *est = (WiFi.status() == WL_CONNECTED) ? "WIFI OK" : "SIN WIFI";
+    uint16_t col = (WiFi.status() == WL_CONNECTED) ? COL_OK : COL_ERR;
+    dibujarLectura(lecturaActual, est, col);
+  }
+
   if (ahora - ultimoEnvio >= INTERVALO_ENVIO_MS) {
     ultimoEnvio = ahora;
 
-    generarDatosRandom(lecturaActual);
     dibujarLectura(lecturaActual, "ENVIANDO", COL_TEMP);
 
     if (WiFi.status() != WL_CONNECTED) {

@@ -1,73 +1,70 @@
-# React + TypeScript + Vite
+# FertilAR UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interfaz web de FertilAR. React 19 + TypeScript + Vite. Autenticación con AWS Cognito y consumo de la API REST del backend.
 
-Currently, two official plugins are available:
+## Requisitos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- [Node.js](https://nodejs.org/) 20 LTS o superior
+- npm (incluido con Node)
+- Backend de FertilAR levantado o desplegado (Elastic Beanstalk)
+- User Pool de Cognito configurado
 
-## React Compiler
+## Configuración
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Copiá las variables de entorno en un archivo `.env` en la raíz del proyecto:
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+VITE_COGNITO_USER_POOL_ID=us-east-1_XXXXXXXXX
+VITE_COGNITO_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxx
+VITE_COGNITO_REGION=us-east-1
+VITE_API_URL=http://localhost:8080
+VITE_LOGO_URL=https://tu-bucket.s3.us-east-1.amazonaws.com/logo.jpg
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+| Variable | Descripción |
+|----------|-------------|
+| `VITE_COGNITO_USER_POOL_ID` | ID del User Pool de Cognito |
+| `VITE_COGNITO_CLIENT_ID` | Client ID de la app en Cognito |
+| `VITE_COGNITO_REGION` | Región de AWS (ej. `us-east-1`) |
+| `VITE_API_URL` | URL base del backend, sin barra final |
+| `VITE_LOGO_URL` | URL del logo (opcional) |
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Para desarrollo local contra el backend en tu máquina:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+VITE_API_URL=http://localhost:8080
 ```
+
+Para apuntar al backend desplegado, usá la URL de Elastic Beanstalk.
+
+## Levantar en desarrollo
+
+```bash
+cd frontend/fertilar-ui
+npm install
+npm run dev
+```
+
+La app queda disponible en [http://localhost:5173](http://localhost:5173).
+
+## Otros comandos
+
+```bash
+npm run build    # compila para producción (salida en dist/)
+npm run preview  # sirve el build localmente
+npm run lint     # ESLint
+```
+
+## Build de producción
+
+```bash
+npm run build
+```
+
+Los archivos estáticos quedan en `dist/`. Subilos al hosting que uses (S3 + CloudFront, Netlify, etc.) con las mismas variables `VITE_*` definidas en el entorno de build.
+
+## Notas
+
+- Las variables `VITE_*` se embeben en el bundle al compilar; cambiarlas requiere un nuevo build.
+- El login se hace directo contra Cognito; luego la UI llama al backend con el JWT en el header `Authorization`.
+- Si ves errores de CORS, verificá que el backend tenga CORS habilitado y que `VITE_API_URL` sea correcta.
