@@ -1,35 +1,37 @@
 .brand {
   display: flex;
-  flex-direction: column;
-  gap: 0.05rem;
+  align-items: center;
+  min-width: 0;
 }
 
-.name {
-  font-size: 1.15rem;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+.logo {
+  display: block;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
-.tag {
-  font-size: 0.68rem;
-  font-weight: 400;
+.default .logo {
+  height: 36px;
+  width: auto;
+  max-width: 120px;
 }
 
-.default .name {
-  color: var(--ink);
+.light .logo {
+  height: 88px;
+  width: auto;
+  max-width: 220px;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
 }
 
-.default .tag {
-  color: var(--ink-muted);
+.menu .logo {
+  height: 56px;
+  width: auto;
+  max-width: 200px;
 }
 
-.light .name {
-  color: var(--paper);
-  font-size: 1.65rem;
-}
-
-.light .tag {
-  color: rgba(255, 255, 255, 0.65);
-  font-size: 0.75rem;
+@media (max-width: 768px) {
+  .light .logo {
+    height: 64px;
+    max-width: 180px;
+  }
 }

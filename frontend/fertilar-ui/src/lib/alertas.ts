@@ -16,8 +16,11 @@ export function getAlerta(id: string): Promise<Alerta> {
   return authFetch<Alerta>(`/alertas/${id}`)
 }
 
-export function listAlertasPorPila(pilaId: string): Promise<Alerta[]> {
-  return authFetch<Alerta[]>(`/pilas/${pilaId}/alertas`)
+export function listAlertasPorPila(pilaId: string, resuelta?: boolean): Promise<Alerta[]> {
+  return authFetch<Alerta[]>(`/pilas/${pilaId}/alertas`).then((alertas) => {
+    if (resuelta === undefined) return alertas
+    return alertas.filter((a) => a.resuelta === resuelta)
+  })
 }
 
 export function resolverAlerta(id: string): Promise<AlertaResolverResponse> {

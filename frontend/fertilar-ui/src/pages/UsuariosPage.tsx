@@ -67,7 +67,7 @@ export default function UsuariosPage() {
     <div className={styles.page}>
       <div className={styles.top}>
         <div>
-          <h1 className={styles.heading}>usuarios</h1>
+          <h1 className={styles.heading}>Usuarios</h1>
           <p className={styles.sub}>
             Gestioná cuentas del sistema: crear usuarios en Cognito, asignar roles y activar o
             desactivar accesos.

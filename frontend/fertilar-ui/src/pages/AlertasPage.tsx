@@ -108,7 +108,7 @@ export default function AlertasPage() {
   return (
     <div className={styles.page}>
       <div className={styles.top}>
-        <h1 className={styles.heading}>alertas</h1>
+        <h1 className={styles.heading}>Alertas</h1>
         <p className={styles.sub}>
           Alertas generadas por lecturas fuera de rango. Podés marcarlas como resueltas cuando las atiendas.
         </p>

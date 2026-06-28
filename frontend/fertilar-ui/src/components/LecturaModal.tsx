@@ -117,7 +117,7 @@ export default function LecturaModal({
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
-          <h2 className={styles.title}>nueva lectura</h2>
+          <h2 className={styles.title}>Nueva lectura</h2>
           <button type="button" className={styles.closeBtn} onClick={onClose} aria-label="Cerrar">
             <X size={18} strokeWidth={1.5} />
           </button>

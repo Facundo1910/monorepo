@@ -147,7 +147,7 @@ export default function UmbralesPage() {
     <div className={styles.page}>
       <div className={styles.top}>
         <div>
-          <h1 className={styles.heading}>umbrales</h1>
+          <h1 className={styles.heading}>Umbrales</h1>
           <p className={styles.sub}>
             Rangos aceptables por pila. Si una lectura sale de estos límites, se genera una alerta.
           </p>

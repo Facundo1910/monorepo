@@ -44,7 +44,19 @@
 .userArea {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.userName {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  max-width: min(180px, 28vw);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .avatar {
@@ -93,7 +105,9 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 0 0.35rem 1.25rem;
+  gap: 0.75rem;
+  padding: 0 0.35rem 1.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .nav {
@@ -175,6 +189,11 @@
 @media (max-width: 640px) {
   .header {
     padding: 1rem;
+  }
+
+  .userName {
+    max-width: 120px;
+    font-size: 0.82rem;
   }
 
   .sidebar {

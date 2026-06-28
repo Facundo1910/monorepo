@@ -40,13 +40,22 @@ export function listLecturasPorSensor(
   return authFetch<Lectura[]>(`/sensores/${sensorId}/lecturas${suffix}`)
 }
 
+type PilaLecturasParams = {
+  desde?: string
+  hasta?: string
+  limit?: number
+}
+
 export function listLecturasPorPila(
   pilaId: string,
-  params: { desde?: string; hasta?: string } = {},
+  params: PilaLecturasParams = {},
 ): Promise<Lectura[]> {
   const query = new URLSearchParams()
   if (params.desde) query.set('desde', params.desde)
   if (params.hasta) query.set('hasta', params.hasta)
   const suffix = query.toString() ? `?${query}` : ''
-  return authFetch<Lectura[]>(`/pilas/${pilaId}/lecturas${suffix}`)
+  return authFetch<Lectura[]>(`/pilas/${pilaId}/lecturas${suffix}`).then((lecturas) => {
+    if (params.limit === undefined || params.limit <= 0) return lecturas
+    return lecturas.slice(0, params.limit)
+  })
 }

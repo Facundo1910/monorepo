@@ -1,14 +1,14 @@
+import { LOGO_URL } from '../lib/branding'
 import styles from './AppBrand.module.css'
 
 type AppBrandProps = {
-  variant?: 'default' | 'light'
+  variant?: 'default' | 'light' | 'menu'
 }
 
 export default function AppBrand({ variant = 'default' }: AppBrandProps) {
   return (
     <div className={`${styles.brand} ${styles[variant]}`}>
-      <span className={styles.name}>fertilar</span>
-      <span className={styles.tag}>planta central</span>
+      <img src={LOGO_URL} alt="FertilAR" className={styles.logo} />
     </div>
   )
 }

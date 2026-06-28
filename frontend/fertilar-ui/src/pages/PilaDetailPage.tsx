@@ -322,7 +322,7 @@ export default function PilaDetailPage() {
       )}
 
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>configuración del proceso</h2>
+        <h2 className={styles.sectionTitle}>Configuración del proceso</h2>
         <div className={styles.configGrid}>
           <div className={styles.field}>
             <label className={styles.label} htmlFor="dias-estimados">días estimados</label>
@@ -380,7 +380,7 @@ export default function PilaDetailPage() {
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>progreso del proceso</h2>
+        <h2 className={styles.sectionTitle}>Progreso del proceso</h2>
         <div className={styles.progressMeta}>
           <span>{progreso.dias} / {diasEstimados} días</span>
           <span>{progreso.pct}%</span>
@@ -440,7 +440,7 @@ export default function PilaDetailPage() {
       </div>
 
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>certificados emitidos</h2>
+        <h2 className={styles.sectionTitle}>Certificados emitidos</h2>
         {certificados.length === 0 ? (
           <p className={styles.emptyCerts}>Todavía no hay certificados para esta pila.</p>
         ) : (

@@ -80,7 +80,7 @@ export default function PilaModal({ open, pila, onClose, onSave }: PilaModalProp
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
-          <h2 className={styles.title}>{pila ? 'editar' : 'nueva pila'}</h2>
+          <h2 className={styles.title}>{pila ? 'Editar pila' : 'Nueva pila'}</h2>
           <button type="button" className={styles.closeBtn} onClick={onClose} aria-label="Cerrar">
             <X size={18} strokeWidth={1.5} />
           </button>

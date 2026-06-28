@@ -109,7 +109,7 @@ export default function SensoresPage() {
     <div className={styles.page}>
       <div className={styles.top}>
         <div>
-          <h1 className={styles.heading}>sensores</h1>
+          <h1 className={styles.heading}>Sensores</h1>
           <p className={styles.sub}>
             Cada pila admite un solo sensor. Podés desactivarlo sin perder el vínculo.
           </p>

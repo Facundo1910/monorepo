@@ -1,0 +1,251 @@
+.card {
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.35rem;
+  box-shadow: 0 1px 3px rgba(42, 41, 38, 0.06);
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.name {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.badge {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #2d6a4f;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(74, 222, 128, 0.25);
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dates {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.progressTrack {
+  height: 6px;
+  background: var(--cream-deep);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--sage-deep), var(--sage));
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.progressLabel {
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+}
+
+.chartSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.chartNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.chartNavBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: var(--cream);
+  color: var(--ink-soft);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
+}
+
+.chartNavBtn:hover {
+  background: var(--cream-deep);
+  color: var(--ink);
+}
+
+.chartNavLabel {
+  flex: 1;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+  letter-spacing: -0.01em;
+}
+
+.chartWrap {
+  min-height: 200px;
+}
+
+.chartCaption {
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+  text-align: center;
+  margin-top: 0.35rem;
+}
+
+.noData {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  background: var(--cream);
+  border-radius: var(--radius-md);
+}
+
+.tooltip {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.65rem;
+  font-size: 0.75rem;
+  box-shadow: 0 4px 12px rgba(42, 41, 38, 0.1);
+}
+
+.tooltipTime {
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 0.25rem;
+}
+
+.indicators {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.indicatorNeutral {
+  color: var(--ink-soft);
+  font-weight: 400;
+  font-size: 0.78rem;
+  padding: 0.35rem 0.6rem;
+}
+
+.indicatorNeutral .indicatorDot {
+  display: none;
+}
+
+.indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.4rem 0.7rem;
+  border-radius: var(--radius-sm);
+  background: var(--cream);
+}
+
+.indicatorDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.indicatorOk {
+  color: #2d6a4f;
+}
+
+.indicatorOk .indicatorDot {
+  background: #4ade80;
+}
+
+.indicatorBad {
+  color: #8b4545;
+}
+
+.indicatorBad .indicatorDot {
+  background: #e74c3c;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.alertLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: #b45309;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.alertLink:hover {
+  color: #92400e;
+}
+
+.noAlerts {
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+}
+
+.detailLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  margin-left: auto;
+}
+
+.detailLink:hover {
+  color: var(--sage-deep);
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 1rem;
+  }
+
+  .indicators {
+    flex-direction: column;
+  }
+}

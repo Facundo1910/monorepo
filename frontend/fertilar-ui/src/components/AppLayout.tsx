@@ -15,19 +15,19 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { getCurrentUsuario } from '../lib/usuarios'
-import type { UsuarioRol } from '../types/usuario'
+import type { UsuarioPerfil } from '../types/usuario'
 import AppBrand from './AppBrand'
 import styles from './AppLayout.module.css'
 
 const NAV_ITEMS = [
-  { to: '/dashboard', label: 'inicio', icon: LayoutGrid, enabled: true, adminOnly: false },
-  { to: '/pilas', label: 'pilas', icon: Layers, enabled: true, adminOnly: false },
-  { to: '/sensores', label: 'sensores', icon: Radio, enabled: true, adminOnly: false },
-  { to: '/alertas', label: 'alertas', icon: Bell, enabled: true, adminOnly: false },
-  { to: '/lecturas', label: 'lecturas', icon: Activity, enabled: true, adminOnly: false },
-  { to: '/umbrales', label: 'umbrales', icon: SlidersHorizontal, enabled: true, adminOnly: false },
-  { to: '/certificados', label: 'certificados', icon: Award, enabled: true, adminOnly: false },
-  { to: '/usuarios', label: 'usuarios', icon: Users, enabled: true, adminOnly: true },
+  { to: '/dashboard', label: 'Inicio', icon: LayoutGrid, enabled: true, adminOnly: false },
+  { to: '/pilas', label: 'Pilas', icon: Layers, enabled: true, adminOnly: false },
+  { to: '/sensores', label: 'Sensores', icon: Radio, enabled: true, adminOnly: false },
+  { to: '/alertas', label: 'Alertas', icon: Bell, enabled: true, adminOnly: false },
+  { to: '/lecturas', label: 'Lecturas', icon: Activity, enabled: true, adminOnly: false },
+  { to: '/umbrales', label: 'Umbrales', icon: SlidersHorizontal, enabled: true, adminOnly: false },
+  { to: '/certificados', label: 'Certificados', icon: Award, enabled: true, adminOnly: false },
+  { to: '/usuarios', label: 'Usuarios', icon: Users, enabled: true, adminOnly: true },
 ] as const
 
 function getInitials(name: string): string {
@@ -36,17 +36,28 @@ function getInitials(name: string): string {
   return name.slice(0, 2).toUpperCase()
 }
 
+function getDisplayName(perfil: UsuarioPerfil | null, fallback: string): string {
+  if (perfil?.nombre) {
+    return `${perfil.nombre} ${perfil.apellido ?? ''}`.trim()
+  }
+  return fallback
+}
+
 export default function AppLayout() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [rol, setRol] = useState<UsuarioRol | null>(null)
+  const [perfil, setPerfil] = useState<UsuarioPerfil | null>(null)
   const { usuario, logout } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
     getCurrentUsuario()
-      .then((perfil) => setRol(perfil.rol))
-      .catch(() => setRol(null))
+      .then(setPerfil)
+      .catch(() => setPerfil(null))
   }, [])
+
+  const displayName = getDisplayName(perfil, usuario?.username ?? '')
+  const initials = getInitials(displayName || '?')
+  const rol = perfil?.rol ?? null
 
   const handleLogout = () => {
     logout()
@@ -69,13 +80,15 @@ export default function AppLayout() {
           >
             <Menu size={20} strokeWidth={1.5} />
           </button>
-          <AppBrand />
         </div>
 
         <div className={styles.userArea}>
-          <div className={styles.avatar}>
-            {usuario ? getInitials(usuario.username) : '??'}
-          </div>
+          <div className={styles.avatar}>{initials}</div>
+          {displayName && (
+            <span className={styles.userName} title={displayName}>
+              {displayName}
+            </span>
+          )}
           <button
             type="button"
             className={styles.iconBtn}
@@ -96,7 +109,7 @@ export default function AppLayout() {
         aria-label="Navegación principal"
       >
         <div className={styles.sidebarTop}>
-          <AppBrand />
+          <AppBrand variant="menu" />
           <button
             type="button"
             className={styles.iconBtn}
@@ -133,7 +146,7 @@ export default function AppLayout() {
         <div className={styles.sidebarFooter}>
           <button type="button" className={styles.logoutLink} onClick={handleLogout}>
             <LogOut size={18} strokeWidth={1.5} />
-            cerrar sesión
+            Cerrar sesión
           </button>
         </div>
       </nav>

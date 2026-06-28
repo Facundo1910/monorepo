@@ -94,7 +94,7 @@ export default function PilasPage() {
     <div className={styles.page}>
       <div className={styles.top}>
         <div>
-          <h1 className={styles.heading}>pilas</h1>
+          <h1 className={styles.heading}>Pilas</h1>
           <p className={styles.sub}>
             Una pila, un sensor. Podés vincularlo o dejarlo deshabilitado sin perder el vínculo.
           </p>

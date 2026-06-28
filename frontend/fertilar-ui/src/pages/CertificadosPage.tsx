@@ -64,7 +64,7 @@ export default function CertificadosPage() {
     <div className={styles.page}>
       <div className={styles.top}>
         <div>
-          <h1 className={styles.heading}>certificados</h1>
+          <h1 className={styles.heading}>Certificados</h1>
           <p className={styles.sub}>
             Todos los certificados emitidos. Para generar uno nuevo, finalizá una pila y emitilo
             desde su detalle.

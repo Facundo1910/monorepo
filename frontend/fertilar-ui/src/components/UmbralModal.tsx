@@ -128,7 +128,7 @@ export default function UmbralModal({
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
-          <h2 className={styles.title}>{umbral ? 'editar umbral' : 'nuevo umbral'}</h2>
+          <h2 className={styles.title}>{umbral ? 'Editar umbral' : 'Nuevo umbral'}</h2>
           <button type="button" className={styles.closeBtn} onClick={onClose} aria-label="Cerrar">
             <X size={18} strokeWidth={1.5} />
           </button>

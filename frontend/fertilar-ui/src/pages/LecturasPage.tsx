@@ -104,7 +104,7 @@ export default function LecturasPage() {
     <div className={styles.page}>
       <div className={styles.top}>
         <div>
-          <h1 className={styles.heading}>lecturas</h1>
+          <h1 className={styles.heading}>Lecturas</h1>
           <p className={styles.sub}>
             Mediciones de sensores: temperatura, humedad, nutrientes y más.
           </p>

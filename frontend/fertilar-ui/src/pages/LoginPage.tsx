@@ -29,7 +29,12 @@ function AuthShell({ children }: { children: ReactNode }) {
       </div>
 
       <div className={styles.formPanel}>
-        <div className={styles.formCard}>{children}</div>
+        <div className={styles.formCard}>
+          <div className={styles.formBrand}>
+            <AppBrand />
+          </div>
+          {children}
+        </div>
       </div>
     </div>
   )
@@ -172,7 +177,7 @@ export default function LoginPage() {
   if (step === 'new_password') {
     return (
       <AuthShell>
-        <h1 className={styles.title}>nueva clave</h1>
+        <h1 className={styles.title}>Nueva clave</h1>
         <p className={styles.subtitle}>
           Tu cuenta requiere una nueva clave de acceso.
         </p>
@@ -219,7 +224,7 @@ export default function LoginPage() {
   if (step === 'forgot_password') {
     return (
       <AuthShell>
-        <h1 className={styles.title}>recuperar clave</h1>
+        <h1 className={styles.title}>Recuperar clave</h1>
         <p className={styles.subtitle}>
           Ingresá tu usuario o correo. Te enviamos un código de verificación.
         </p>
@@ -257,7 +262,7 @@ export default function LoginPage() {
   if (step === 'confirm_reset') {
     return (
       <AuthShell>
-        <h1 className={styles.title}>nueva clave</h1>
+        <h1 className={styles.title}>Nueva clave</h1>
         <p className={styles.subtitle}>
           Ingresá el código que recibiste y elegí una nueva clave.
         </p>
@@ -328,7 +333,7 @@ export default function LoginPage() {
 
   return (
     <AuthShell>
-      <h1 className={styles.title}>iniciar sesión</h1>
+      <h1 className={styles.title}>Iniciar sesión</h1>
       <p className={styles.subtitle}>Ingresá tus credenciales de acceso.</p>
 
       <form className={styles.form} onSubmit={handleLogin} noValidate>
