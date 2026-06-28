@@ -3,33 +3,28 @@
 #include <ArduinoJson.h>
 #include <Arduino_GFX_Library.h>
 
-// ─── CONFIGURACION ────────────────────────────────────────────────────────
 #define WIFI_SSID          "Claro-Facundo"
 #define WIFI_PASSWORD      "12345678"
 #define API_BASE_URL       "http://Fertilar-service-env.eba-qbxpyswm.us-east-1.elasticbeanstalk.com"
 #define AUTH_USERNAME      "facubas39@gmail.com"
 #define AUTH_PASSWORD      "Facundo1905?"
 #define SENSOR_ID          "888204da-90a7-4270-b94b-d4534894129a"
-#define INTERVALO_ENVIO_MS    60000  // envio al backend
-#define INTERVALO_LECTURA_MS  5000   // lectura de sensores RS485
+#define INTERVALO_ENVIO_MS    60000
+#define INTERVALO_LECTURA_MS  5000
 
-// ─── RS485 / MAX485 (bus compartido) ────────────────────────────────────
-// Cableado: RO->GPIO9, DI->GPIO10, DE+RE->GPIO11, A->Verde, B->Blanco
 #define RS485_RX         9
 #define RS485_TX         10
 #define RS485_DE_RE      11
 #define RS485_BAUD       9600
 #define RS485_TIMEOUT_MS 800
 
-// Sensor suelo 7-en-1 (NPK + humedad + temp + EC + pH) — Renke / JXCT
-#define HAY_SENSOR_NPK   0       // 1 cuando conectes el sensor suelo 7-en-1
+#define HAY_SENSOR_NPK   0
 #define NPK_SLAVE_ADDR   0x01
 #define NPK_REG_START    0x0000
 #define NPK_REG_COUNT    7
 
-// Sensor oxigeno disuelto
-#define HAY_SENSOR_O2    1       // 0 si no esta conectado
-#define O2_SLAVE_ADDR    0x01    // usar 0x02 si NPK y O2 comparten bus
+#define HAY_SENSOR_O2    1
+#define O2_SLAVE_ADDR    0x01
 #define O2_REG           0x0002
 #define O2_SCALE         0.01f
 #define O2_FUNC          0x03
@@ -37,9 +32,7 @@
 HardwareSerial RS485Serial(2);
 bool npkSensorOk = false;
 bool o2SensorOk = false;
-// ──────────────────────────────────────────────────────────────────────────
 
-// ─── LCD ──────────────────────────────────────────────────────────────────
 #define LCD_DC       45
 #define LCD_CS       21
 #define LCD_SCK      38
@@ -79,9 +72,7 @@ const char *etiquetas[8] = {
 const uint16_t colores[8] = {
     COL_HUM, COL_TEMP, COL_EC, COL_PH,
     COL_N, COL_P, COL_O2, COL_STATUS};
-// ──────────────────────────────────────────────────────────────────────────
 
-// ─── DATOS DEL SENSOR ─────────────────────────────────────────────────────
 struct LecturaSensor {
   float    humedad;
   float    temperatura;
@@ -95,13 +86,11 @@ struct LecturaSensor {
 };
 
 LecturaSensor lecturaActual = {};
-// ──────────────────────────────────────────────────────────────────────────
 
 String accessToken = "";
 unsigned long ultimoEnvio = 0;
 unsigned long ultimaLectura = 0;
 
-// ─── LCD: inicializacion ──────────────────────────────────────────────────
 void lcd_reg_init() {
   static const uint8_t init_operations[] = {
     BEGIN_WRITE,
@@ -239,9 +228,7 @@ void dibujarLectura(const LecturaSensor &d, const char *estado, uint16_t colorEs
   gfx->setCursor(x + 8, y + 18);
   gfx->print(estado);
 }
-// ──────────────────────────────────────────────────────────────────────────
 
-// ─── RS485 / MODBUS ───────────────────────────────────────────────────────
 uint16_t modbusCRC16(const uint8_t *data, uint16_t len) {
   uint16_t crc = 0xFFFF;
   for (uint16_t i = 0; i < len; i++) {
@@ -375,9 +362,7 @@ void leerSensores() {
   o2SensorOk = false;
 #endif
 }
-// ──────────────────────────────────────────────────────────────────────────
 
-// ─── WIFI + API ───────────────────────────────────────────────────────────
 bool conectarWiFi() {
   Serial.printf("Conectando a WiFi: %s", WIFI_SSID);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
@@ -470,13 +455,11 @@ bool enviarLectura(const LecturaSensor &d) {
   http.end();
   return false;
 }
-// ──────────────────────────────────────────────────────────────────────────
 
 void setup() {
   Serial.begin(115200);
   delay(1500);
 
-  // LCD init
   pinMode(LCD_RST, OUTPUT);
   digitalWrite(LCD_RST, LOW); delay(10);
   digitalWrite(LCD_RST, HIGH); delay(10);
